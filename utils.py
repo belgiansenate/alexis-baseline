@@ -22,12 +22,16 @@ def split_document(file_path):
     pattern_head_of_page = r'\d\-\d+\s\/\sp\.\s\d'
     pattern_left = r'.+\s{2,}'
     # pattern_ducth = r'\s{4,}.+'
+    page_number = 1
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
 
             # Read the file line by line
             for i, line in enumerate(file):
-
+                print(page_number)
+                if page_number < 2 and get_page_number(line) is not None:
+                    page_number = get_page_number(line)
+                    continue
                 # keeping page number
                 if re.search(pattern_head_of_page, line):
                     lines_french.append(line)
@@ -56,3 +60,4 @@ def get_page_number(line):
 
 french_text, dutch_text = split_document('extracted/5-150.txt')
 print(french_text)
+
