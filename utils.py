@@ -1,6 +1,10 @@
 import re
 import subprocess as sp
 
+"""
+    This file contains utility functions that are used in the main script.
+"""
+
 
 def transform_pdf_2_txt(path, output_file):
     # Generate a text rendering of a PDF file in the form of a list of lines.
@@ -18,37 +22,32 @@ def remove_substring(string, substring):
 
 def split_document(file_path):
     lines_french = []
-    lines_ducth = []
-    pattern_head_of_page = r'\d\-\d+\s\/\sp\.\s\d'
-    pattern_left = r'.+\s{2,}'
-    # pattern_ducth = r'\s{4,}.+'
-    page_number = 1
+    lines_dutch = []
+    pattern_head_of_page = r'\d-\d+\s/\sp\.\s\d+'
+    pattern_left_text = r'.+\s{2,}'
+    first_page_encountered = False
+
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-
-            # Read the file line by line
-            for i, line in enumerate(file):
-                print(page_number)
-                if page_number < 2 and get_page_number(line) is not None:
-                    page_number = get_page_number(line)
-                    continue
-                # keeping page number
+            for line in file:
                 if re.search(pattern_head_of_page, line):
+                    first_page_encountered = True
                     lines_french.append(line)
-                    lines_ducth.append(line)
+                    lines_dutch.append(line)
                     continue
-                # keeping left-line text
-                if re.search(pattern_left, line):
-                    line_2_add = re.search(pattern_left, line).group()
-                else:
-                    line_2_add = line
-                lines_french.append(line_2_add)
-                lines_ducth.append(remove_substring(line, line_2_add))
+
+                if first_page_encountered:
+                    match_left_text = re.search(pattern_left_text, line)
+                    line_2_add = match_left_text.group() if match_left_text else line
+                    lines_french.append(line_2_add)
+                    lines_dutch.append(line.replace(line_2_add, '').strip())
+
     except FileNotFoundError:
         print("The specified file was not found.")
     except Exception as e:
         print("An error occurred while reading the file:", str(e))
-    return '\n'.join(lines_french), ''.join(lines_ducth)
+
+    return '\n'.join(lines_french), '\n'.join(lines_dutch)
 
 
 def get_page_number(line):
@@ -58,6 +57,16 @@ def get_page_number(line):
     return None
 
 
-french_text, dutch_text = split_document('extracted/5-150.txt')
-print(french_text)
+def get_document_metadata(document):
+    return None
 
+
+def build_metadata(document_id, page_numbers):
+    return {
+        'document_id': document_id,
+        'page_number': page_numbers
+    }
+
+
+def get_chunks(text):
+    return None
