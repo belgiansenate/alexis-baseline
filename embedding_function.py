@@ -41,6 +41,6 @@ class TFIDFVectorizer(EmbeddingFunction):
         else:
             vectors = self.vectorizer.fit_transform(texts)
             # save_vectorizer
-            joblib.dump(self.vectorizer, 'tfidf_vectorizer.pkl')
+            joblib.dump(self.vectorizer, 'model_saved/tfidf_vectorizer.pkl')
         vectors = vectors.toarray().tolist()
         return vectors
