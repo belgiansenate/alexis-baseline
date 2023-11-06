@@ -4,9 +4,6 @@ from os import listdir
 from os.path import isfile, join
 from document_object import Document
 from pypdf import PdfReader
-import nltk
-from nltk.tokenize import sent_tokenize
-import joblib
 
 """
     This file contains utility functions that are used in the main script.
@@ -100,10 +97,6 @@ def get_page_number(line):
     return None
 
 
-def get_chunks(text):
-    return None
-
-
 def count_contents_title(text):
     pattern_summary = r'\.{2}.\d'
     text = text.split('\n')
@@ -182,16 +175,6 @@ def get_digits(text):
     return re.findall(r'\d+', text)
 
 
-def extract_sentence_and_position(full_text, target_sentence):
-    sentences = sent_tokenize(full_text)
-
-    for i, sentence in enumerate(sentences):
-        if target_sentence in sentence:
-            return sentence, i, i + 1
-
-    return None, None, None
-
-
 def preprocess_content(content):
     noised_page_number, _, _ = match_pattern(r'\.{2,}.\d+', content)
     content = content.replace(noised_page_number, '')
@@ -255,6 +238,8 @@ def retrieve_chunks_from_document(full_text_cleaned, contents_titles):
         passages.append(passage)
 
     return passages
+
+# test on a single document
 
 # french, dutch = split_document('extracted/5-150.txt')
 #
