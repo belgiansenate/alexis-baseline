@@ -27,7 +27,7 @@ class BERTEmbedding(EmbeddingFunction):
         return outputs.detach().tolist()
 
 
-class TFIDFVectorizer(EmbeddingFunction):
+class TFIDFVectorizer(EmbeddingFunction): #sklearn
     def __init__(self, existing_vectorizer=None):
         self.existing_vectorizer = existing_vectorizer
         if existing_vectorizer is not None:

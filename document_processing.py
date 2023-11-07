@@ -11,16 +11,6 @@ from document_object import Document
 """
 
 
-def get_documents_from_folder(folder_path):
-    """
-    This function returns the list of documents in a folder
-    :param folder_path: path to the folder
-    :return: contains the list of documents in a folder
-    """
-    documents = [f for f in listdir(folder_path) if isfile(join(folder_path, f))]
-    return documents
-
-
 def get_document_metadata(document_file_path):
     """
     This function returns the metadata of a document
@@ -318,15 +308,15 @@ def preprocess_text(text):
     return full_text_cleaned, summary_titles
 
 
-def build_passages_objects(document_file_path, pdf_folder_path, text_folder_path):
+def build_passages_objects(document_file_name, pdf_folder_path, text_folder_path):
     """
     This function builds the passages objects from a document
-    :param document_file_path: path to the document
+    :param document_file_name: name of the document
     :param pdf_folder_path: path to the folder containing the pdf documents
     :param text_folder_path: path to the folder containing the extracted text documents
     :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
-    input_file = f'{pdf_folder_path}/{document_file_path}'
+    input_file = f'{pdf_folder_path}/{document_file_name}'
     pattern_for_document_id = r'\d+\-\d+'  # Example: 2-285, 6-1, 5-2
 
     # get document metadata
@@ -366,4 +356,4 @@ def build_passages_objects(document_file_path, pdf_folder_path, text_folder_path
     return french_passages_objects, dutch_passages_objects, contents_not_found_french, contents_not_found_dutch
 
 
-build_passages_objects('webdriver-4.pdf', 'documents', 'extracted')
+build_passages_objects('5-19.pdf', 'documents', 'extracted')

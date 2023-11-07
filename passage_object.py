@@ -4,12 +4,14 @@ from typing import List
 class PassageObject:
     def __init__(self,  document_id, document_title, passage_title, page, passage_text):
         self.passage_text = passage_text
-        self.passage_title = passage_title
-        self.document_title = document_title
-        self.metadata = {'document_id': document_id, 'page': page}
+        self.metadata = {'document_id': document_id,
+                         'page': page,
+                         'passage_title': passage_title,
+                         'document_title': document_title
+                         }
 
     def __str__(self):
-        return (f'PassageObject: {self.passage_title}, from document {self.metadata["document_id"]},'
+        return (f'PassageObject: {self.metadata["passage_title"]}, from document {self.metadata["document_title"]},'
                 f' on page {self.metadata["page"]}, text: {self.passage_text}'
                 )
 
