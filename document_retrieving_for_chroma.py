@@ -1,8 +1,6 @@
-from document_object import Document
-from passage_object import PassageObject
 from embedding_function import TFIDFVectorizer
+from document_processing import build_document_object, get_documents_from_folder
 from vector_database_manager import ChromaClient, Mode
-from utils import build_document_object, get_page_number, get_chunks, get_documents_from_folder
 
 
 def processing_storing_to_db(path_to_pdf_folder, path_to_text_folder, chromadb_client: ChromaClient, collection_name):
@@ -28,7 +26,7 @@ def processing_storing_to_db(path_to_pdf_folder, path_to_text_folder, chromadb_c
     ids_to_add = []
 
     for document in documents:
-        # TODO : implement passage extraction
+
         ################################ Provisional Solution ###########################
         chunks_size = 2
         limit = collection_size + chunks_size
