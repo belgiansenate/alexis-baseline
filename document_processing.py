@@ -2,9 +2,7 @@ import re
 import subprocess as sp
 from os import listdir
 from os.path import isfile, join
-
 from pypdf import PdfReader
-
 from passage_object import PassageObject
 from document_object import Document
 
@@ -56,8 +54,14 @@ def split_document(text_files_path):
     """
     left_text = []
     right_text = []
+
+    # 2-285 / p. 4     Sénat de Belgique - Séances plénières - Jeudi 3 avril 2003 - Séance du soir - Annales
     pattern_head_of_page = r'\d-\d+\s/\sp\.\s\d+'
+
+    # match left text when it is more than 3 spaces(the right text is always less than 3 spaces)
     pattern_left_text = r'.+\s{3,}'
+
+    # if the first pattern head of page is encountered then the first page is passed we can start to extract the text
     first_page_encountered = False
 
     try:
@@ -327,7 +331,6 @@ def build_passages_objects(document_file_path, pdf_folder_path, text_folder_path
 
     # get document metadata
     metadata = get_document_metadata(f'{input_file}')
-    print(metadata)
     document_title = metadata['/Title']
 
     # retrieve the document id
