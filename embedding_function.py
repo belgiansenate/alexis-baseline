@@ -24,7 +24,7 @@ class BERTEmbedding(EmbeddingFunction):
             outputs = self.model(**inputs)
         outputs = outputs[0][:, 0, :]
 
-        return outputs.detach().tolist()
+        return outputs.detach().tolist()[0]
 
 
 class TFIDFVectorizer(EmbeddingFunction): #sklearn
