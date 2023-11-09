@@ -1,4 +1,6 @@
 import numpy
+from sentence_transformers import SentenceTransformer
+
 from chromadb import EmbeddingFunction, Embeddings
 from transformers import BertTokenizer, BertModel
 import torch
@@ -7,6 +9,19 @@ import joblib
 
 
 # TODO: Finetune BERT or S-BERT model for senate documents
+class SentenceBERTEmbedding(EmbeddingFunction):
+    def __init__(self, model_name='all-MiniLM-L6-v2'):
+        # initialize tokenizer and model
+        self.model_name = model_name
+        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    def __call__(self, texts) -> Embeddings:
+        # Generate BERT embeddings
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        with torch.no_grad():
+            outputs = self.model.encode(texts, convert_to_tensor=True)
+        return outputs.detach().tolist()
+
 
 class BERTEmbedding(EmbeddingFunction):
 
@@ -27,7 +42,7 @@ class BERTEmbedding(EmbeddingFunction):
         return outputs.detach().tolist()[0]
 
 
-class TFIDFVectorizer(EmbeddingFunction): #sklearn
+class TFIDFVectorizer(EmbeddingFunction):  # sklearn
     def __init__(self, existing_vectorizer=None):
         self.existing_vectorizer = existing_vectorizer
         if existing_vectorizer is not None:

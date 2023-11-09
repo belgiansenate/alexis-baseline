@@ -34,14 +34,14 @@ def processing_storing_to_db(path_to_pdf_folder, path_to_text_folder, chromadb_c
     metadata_to_add = []
     limit = collection_size + len(passages_objects)
     ids_to_add = [str(i) for i in range(collection_size, limit)]
-
+    print(f'PROCESSING .....')
     for passage_object in tqdm(passages_objects):
         passage_embedding = embedding_function(passage_object.passage_text)
         embeddings_to_add.append(passage_embedding)
         passages_to_add.append(passage_object.passage_text)
         metadata_to_add.append(passage_object.metadata)
     try:
-        main_collection.add(ids=ids_to_add,
+        main_collection.upsert(ids=ids_to_add,
                             documents=passages_to_add,
                             embeddings=embeddings_to_add,
                             metadatas=metadata_to_add
@@ -75,21 +75,3 @@ def querying_to_db(chroma_client, collection_name, nl_query, embedding_model, n_
         results_set = None
 
     return results_set
-
-
-################################ storing documents ###########################
-embedding_function = BERTEmbedding()
-client = ChromaClient(host='localhost', port_number='8000', mode=Mode.host)
-collection_name = 'SVD_for_documents_retrieval'
-# drop collection if it exists try: client.delete_collection(name=collection_name) except: pass collection =
-# client.create_collection(name=collection_name) processing_storing_to_db(path_to_pdf_folder='documents',
-# path_to_text_folder='extracted', chromadb_client=client, collection_name=collection_name,
-# embedding_function=embedding_function)
-
-# ############################### querying database ###########################
-
-
-query = "Pour quel raison devrions nous remercier Mme Morreale ?"
-results = querying_to_db(chroma_client=client, collection_name=collection_name, nl_query=query,
-                         embedding_model=embedding_function, n_results=3)
-print(results)

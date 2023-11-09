@@ -1,8 +1,5 @@
-from typing import List
-
-
 class PassageObject:
-    def __init__(self,  document_id, document_title, passage_title, page, passage_text):
+    def __init__(self, document_id, document_title, passage_title, page, passage_text):
         self.passage_text = passage_text
         self.metadata = {'document_id': document_id,
                          'page': page,
@@ -14,4 +11,3 @@ class PassageObject:
         return (f'PassageObject: {self.metadata["passage_title"]}, from document {self.metadata["document_title"]},'
                 f' on page {self.metadata["page"]}, text: {self.passage_text}'
                 )
-

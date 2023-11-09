@@ -321,7 +321,10 @@ def build_passages_objects(document_file_name, pdf_folder_path, text_folder_path
 
     # get document metadata
     metadata = get_document_metadata(f'{input_file}')
-    document_title = metadata['/Title']
+    if '/Title' not in metadata:
+        document_title = document_file_name
+    else:
+        document_title = metadata['/Title']  # document must contain a title in the metadata
 
     # retrieve the document id
     document_id = match_pattern_with_position(
@@ -354,6 +357,3 @@ def build_passages_objects(document_file_name, pdf_folder_path, text_folder_path
     )
 
     return french_passages_objects, dutch_passages_objects, contents_not_found_french, contents_not_found_dutch
-
-
-build_passages_objects('5-19.pdf', 'documents', 'extracted')

@@ -33,6 +33,7 @@ class ChromaClient:
     def delete_collection(self, name: str):
         return self.chroma_client.delete_collection(name=name)
 
+    # TODO : Upgrading the ChromaClient class
     def store_documents(self, collection_name, chunks: List[PassageObject]):
         collection = self.chroma_client.get_collection(collection_name)
         collection.add(
@@ -43,3 +44,8 @@ class ChromaClient:
 
     def reset(self):
         self.chroma_client.reset()
+
+    def get_or_create_collection(self, collection_name):
+        if self.embedding_function is None:
+            return self.chroma_client.get_or_create_collection(name=collection_name)
+        return self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embedding_function)
