@@ -1,15 +1,8 @@
 import csv
-import json
-import os.path
 import re
-
-import gradio as gr
-import random
 import time
-
-from sentence_transformers import SentenceTransformer
-
-from document_retrieving_for_chroma import processing_storing_to_db, querying_to_db
+import gradio as gr
+from document_retrieving_for_chroma import querying_to_db
 from embedding_function import SentenceBERTEmbedding
 from vector_database_manager import ChromaClient, Mode
 
@@ -43,19 +36,18 @@ def respond(message, chat_history, n_results):
 
 
 # remove all special characters
-drop_special_char = lambda x: re.sub(r'[\n\r\t;,:!?()\[\]{}=+\-*/\\]', ' ', x)
+drop_special_char = lambda x: re.sub(r'[\n\r\t;,:!?()\[\]{}=+\-*/\\]', '', x)
 
 
-def save_to_json(question, context, answer):
-    data = [{
-        "question": drop_special_char(question),
-        "context": drop_special_char(context),
-        "answer": drop_special_char(answer)
-    }]
+def save_to_csv(question, context, answer):
+    if question == "" or context == "" or answer == "":
+        gr.Warning("Please fill all the fields")
+        return
+
     with open('datas.csv', mode='a+', newline="", encoding="utf8") as f:
         csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow([drop_special_char(question), drop_special_char(context), drop_special_char(answer)])
-    print("Csv file saved")
+    gr.Info("Saved to csv")
 
 
 with gr.Blocks() as demo:
@@ -68,15 +60,17 @@ with gr.Blocks() as demo:
                 with gr.Column(min_width=50):
                     clear_input_space = gr.ClearButton([msg], value="Clear Input")
                     clear = gr.ClearButton([msg, chatbot, n_results], value="Clear All")
-        with gr.Group(visible=True):
+        with gr.Group():
             with gr.Row():
                 question = gr.Textbox(label="Question")
                 context = gr.Textbox(label="Context")
                 answer = gr.Textbox(label="Answer")
-            save_button = gr.Button(value="Save to Json")
+            with gr.Row():
+                save_button = gr.Button(value="Save to Json")
+                gr.ClearButton([question, context, answer], value="Clear All")
     with gr.Tab("generation"):
         pass
-    save_button.click(save_to_json, [question, context, answer])
+    save_button.click(save_to_csv, [question, context, answer])
     msg.submit(respond, [msg, chatbot, n_results], [msg, chatbot])
 
-demo.launch()
+demo.queue().launch()

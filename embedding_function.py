@@ -12,12 +12,10 @@ import joblib
 class SentenceBERTEmbedding(EmbeddingFunction):
     def __init__(self, model_name='all-MiniLM-L6-v2'):
         # initialize tokenizer and model
-        self.model_name = model_name
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.model = SentenceTransformer(model_name, device='cuda' if torch.cuda.is_available() else 'cpu')
 
     def __call__(self, texts) -> Embeddings:
         # Generate BERT embeddings
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         with torch.no_grad():
             outputs = self.model.encode(texts, convert_to_tensor=True)
         return outputs.detach().tolist()

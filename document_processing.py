@@ -7,7 +7,7 @@ from passage_object import PassageObject
 from document_object import Document
 
 """
-    This file contains utility functions that are used in the main script.
+    This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
 """
 
 
