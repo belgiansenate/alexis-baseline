@@ -19,6 +19,7 @@ client = ChromaClient(mode=Mode.local, path_directory='chromadb')
 collection = client.get_or_create_collection(collection_name)
 
 
+###################uncomment this to process and store the documents in the database###################
 # processing_storing_to_db(path_to_pdf_folder='documents', path_to_text_folder='extracted',
 #                          chromadb_client=client, collection_name=collection_name, embedding_function=embedder)
 
@@ -75,7 +76,7 @@ with gr.Blocks() as demo:
             save_button = gr.Button(value="Save to Json")
     with gr.Tab("generation"):
         pass
-    save_button.click(save_to_json, [question, context, answer], trigger_mode="once")
+    save_button.click(save_to_json, [question, context, answer])
     msg.submit(respond, [msg, chatbot, n_results], [msg, chatbot])
 
 demo.launch()
