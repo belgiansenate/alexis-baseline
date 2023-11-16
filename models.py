@@ -1,11 +1,7 @@
-import numpy
-from sentence_transformers import SentenceTransformer
-
-from chromadb import EmbeddingFunction, Embeddings
-from transformers import BertTokenizer, BertModel
 import torch
-from sklearn.feature_extraction.text import TfidfVectorizer
-import joblib
+from sentence_transformers import SentenceTransformer
+from transformers import BertTokenizer, BertModel
+from chromadb import EmbeddingFunction, Embeddings
 
 
 # TODO: Finetune BERT or S-BERT model for senate documents
@@ -38,22 +34,3 @@ class BERTEmbedding(EmbeddingFunction):
         outputs = outputs[0][:, 0, :]
 
         return outputs.detach().tolist()[0]
-
-
-class TFIDFVectorizer(EmbeddingFunction):  # sklearn
-    def __init__(self, existing_vectorizer=None):
-        self.existing_vectorizer = existing_vectorizer
-        if existing_vectorizer is not None:
-            self.vectorizer = joblib.load(self.existing_vectorizer)
-        else:
-            self.vectorizer = TfidfVectorizer()
-
-    def __call__(self, texts) -> Embeddings:
-        if self.existing_vectorizer is not None:
-            vectors = self.vectorizer.transform(texts)
-        else:
-            vectors = self.vectorizer.fit_transform(texts)
-            # save_vectorizer
-            joblib.dump(self.vectorizer, 'model_saved/tfidf_vectorizer.pkl')
-        vectors = vectors.toarray().tolist()
-        return vectors

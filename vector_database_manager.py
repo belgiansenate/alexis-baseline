@@ -1,8 +1,6 @@
 from enum import Enum
-from typing import Optional, Collection, List
-
+from typing import List
 import chromadb
-
 from passage_object import PassageObject
 
 

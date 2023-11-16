@@ -1,14 +1,30 @@
+import os
 import re
 import subprocess as sp
-from os import listdir
-from os.path import isfile, join
+import pandas as pd
+import requests
 from pypdf import PdfReader
 from passage_object import PassageObject
-from document_object import Document
 
 """
     This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
 """
+
+
+class PdfObject:
+    def __init__(self, pdf_id, act, date, legislature, start_page, end_page, link):
+        self.id = str(pdf_id)
+        self.date = date
+        self.act = str(act)
+        self.legislature = legislature
+        self.start_page = start_page
+        self.end_page = end_page
+        self.hyperlink = link + self.id
+
+    def __str__(self):
+        return (f'Document_records_object: {self.id}, from document {self.date},'
+                f' on page {self.legislature}'
+                )
 
 
 def get_document_metadata(document_file_path):
@@ -85,30 +101,6 @@ def split_document(text_files_path):
         print("An error occurred while reading the file:", str(e))
 
     return '\n'.join(left_text), '\n'.join(right_text)
-
-
-def build_document_object(document_file_path, pdf_folder_path, text_folder_path):
-    """
-    This function builds a document object
-    :param document_file_path: path to the document
-    :param pdf_folder_path: path to the folder containing the pdf documents
-    :param text_folder_path: path to the folder containing the extracted text documents
-    :return:  object
-    """
-    input_file = f'{pdf_folder_path}/{document_file_path}'
-    # get document metadata
-    metadata = get_document_metadata(f'{input_file}')
-    name = metadata['/Title'] + '.txt'
-    output_file = f'{text_folder_path}/{name}'
-    transform_pdf_2_txt(input_file, output_file)
-
-    # get document text in French and Dutch
-    if int(metadata['/Title'][0]) % 2 == 0:
-        dutch_text, french_text = split_document(output_file)
-    else:
-        french_text, dutch_text = split_document(output_file)
-
-    return Document(french_text, dutch_text, metadata)
 
 
 def count_contents_title(text):
@@ -245,13 +237,12 @@ def join_lines(string):
     return ' '.join(joined_lines)
 
 
-def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_title=None, document_id=None):
+def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_id=None):
     """
     This function retrieves the chunks from a document and returns the passages objects containing all the
     information about the passage :param full_text_cleaned: :param contents_titles:
     :param contents_titles: list of contents titles in the current document
     :param full_text_cleaned: the full text of the document cleaned
-    :param document_title: document title
     :param document_id: document id
     :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
@@ -271,7 +262,7 @@ def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_t
                                                                                             full_text_cleaned)
 
         if current_content_start_pos == -1 or current_content_end_pos == -1:
-            contents_not_found.append(f'No match found for {pattern_for_current_title} for document {document_title}')
+            contents_not_found.append(f'No match found for {pattern_for_current_title} for document {document_id}')
             continue
 
         if pattern_for_following_title is None:
@@ -281,14 +272,14 @@ def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_t
             _, next_content_start_index, _ = match_pattern_with_position(pattern_for_following_title, full_text_cleaned)
             if next_content_start_index == -1:
                 contents_not_found.append(
-                    f'No match found for {pattern_for_current_title} for document {document_title}')
+                    f'No match found for {pattern_for_current_title} for document {document_id}')
                 continue
             passage_text = full_text_cleaned[current_content_end_pos:next_content_start_index]
 
             # dropping the passage from the full text by slicing
             full_text_cleaned = full_text_cleaned[next_content_start_index:]
 
-        passage_object = PassageObject(document_id, document_title, title[0], title[1], passage_text)
+        passage_object = PassageObject(document_id, title[0], title[1], passage_text)
         passages.append(passage_object)
 
     return passages, contents_not_found
@@ -308,41 +299,47 @@ def preprocess_text(text):
     return full_text_cleaned, summary_titles
 
 
-def build_passages_objects(document_file_name, pdf_folder_path, text_folder_path):
+def download_pdf_from_website(link, path):
+    """
+    This function downloads a file from a link
+    :param link: hyperlink to the file
+    :param path: path to the folder where the file will be saved
+    :return: None
+    """
+    try:
+        # avoid ssl certificate error
+        r = requests.get(link, verify=False)
+        open(path, 'wb').write(r.content)
+    except Exception as e:
+        print(f'Error: {e}')
+
+
+def build_passages_objects(pdf_object: PdfObject, text_folder_path):
     """
     This function builds the passages objects from a document
-    :param document_file_name: name of the document
-    :param pdf_folder_path: path to the folder containing the pdf documents
+    :param pdf_object: pdf object containing the document information
     :param text_folder_path: path to the folder containing the extracted text documents
     :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
-    input_file = f'{pdf_folder_path}/{document_file_name}'
-    pattern_for_document_id = r'\d+\-\d+'  # Example: 2-285, 6-1, 5-2
+    input_name = pdf_object.id + '.pdf'
+    local_path = 'pdf_files/' + input_name
 
-    # get document metadata
-    metadata = get_document_metadata(f'{input_file}')
-    if '/Title' not in metadata:
-        document_title = document_file_name
-    else:
-        document_title = metadata['/Title']  # document must contain a title in the metadata
-
-    # retrieve the document id
-    document_id = match_pattern_with_position(
-        pattern_for_document_id, document_title
-    )[0]  # Example: 2-285, 6-1, 5-2
-
-    legislature_number = int(document_id[0])
+    # download pdf file from the website to the local path it's a provisional solution because the network doesn't
+    # allow it caused by ssl certificate
+    download_pdf_from_website(pdf_object.hyperlink, local_path)
 
     # transform pdf to text with output name = document title.txt
-    output_name = document_title + '.txt'
-    output_file = f'{text_folder_path}/{output_name}'
-    transform_pdf_2_txt(input_file, output_file)
+    output_name = pdf_object.id + '.txt'
+    output_file_path = f'{text_folder_path}/{output_name}'
+
+    transform_pdf_2_txt(local_path, output_file_path)
+    # transform_pdf_2_txt(pdf_object.hyperlink, output_file_path)
 
     # if legislature is odd then the first page is in French else it is in Dutch
-    if int(legislature_number) % 2 == 0:
-        dutch_text, french_text = split_document(output_file)
+    if int(pdf_object.legislature) % 2 == 0:
+        dutch_text, french_text = split_document(output_file_path)
     else:
-        french_text, dutch_text = split_document(output_file)
+        french_text, dutch_text = split_document(output_file_path)
 
     # preprocessing text
     french_text, french_contents_titles = preprocess_text(french_text)
@@ -350,10 +347,33 @@ def build_passages_objects(document_file_name, pdf_folder_path, text_folder_path
 
     # build passages objects and return them with the contents not found
     french_passages_objects, contents_not_found_french = retrieve_chunks_from_document(
-        french_text, french_contents_titles, document_title, document_id
+        french_text, french_contents_titles, pdf_object.id
     )
     dutch_passages_objects, contents_not_found_dutch = retrieve_chunks_from_document(
-        dutch_text, dutch_contents_titles, document_title, document_id
+        dutch_text, dutch_contents_titles, pdf_object.id
     )
 
+    # drop the pdf file and the text file
+    os.remove(local_path)
+    os.remove(output_file_path)
+
     return french_passages_objects, dutch_passages_objects, contents_not_found_french, contents_not_found_dutch
+
+
+def build_pdf_object_via_hyperlink(path_to_excel_file,
+                                   hyperlink="https://www.senate.be/www/webdriver?MItabObj=pdf&MIcolObj=pdf"
+                                             "&MInamObj=pdfid&MItypeObj=application/pdf&MIvalObj="):
+    """
+    This function returns the documents from the database
+    :param hyperlink: hyperlink is the path to document  (hyperlink + document_id)
+    :param path_to_excel_file: path to the Excel file containing the documents
+    :return:
+    """
+    df = pd.read_excel(path_to_excel_file)
+    documents = df.to_dict('records')
+    documents_information = [PdfObject(document['pdfid'], document['handelingenid'], document['datum'],
+                                       document['legislatuur'], document['beginblz'],
+                                       document['eindblz'], hyperlink)
+                             for document in documents]
+
+    return documents_information

@@ -1,28 +1,24 @@
 from tqdm import tqdm
-
-from document_processing import build_passages_objects
-from utils import get_documents_from_folder
-from embedding_function import BERTEmbedding
-from vector_database_manager import ChromaClient, Mode
+from document_processing import build_passages_objects, build_pdf_object_via_hyperlink
+from vector_database_manager import ChromaClient
 
 
-def processing_storing_to_db(path_to_pdf_folder, path_to_text_folder, chromadb_client: ChromaClient, collection_name,
-                             embedding_function=None):
+def passages_storing(path_to_xl_file, path_to_text_folder, chromadb_client: ChromaClient, collection_name,
+                     embedding_function=None):
     """
     This function processes the passages_objects from a folder and stores them in a collection in the database.
     :param chromadb_client: ChromaClient object
-    :param path_to_pdf_folder: path to the folder containing the pdf passages_objects
+    :param path_to_xl_file: path to the Excel file containing the metadata
     :param path_to_text_folder: path to the folder containing the extracted text passages_objects
     :param collection_name: name of the collection (SVD_for_documents_retrieval)
     :return: None
     """
-    pdf_documents = get_documents_from_folder(path_to_pdf_folder)
+    documents_datas = build_pdf_object_via_hyperlink(path_to_xl_file)
     passages_objects = []
 
-    for pdf_document in pdf_documents:
-        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(
-            pdf_document, path_to_pdf_folder, path_to_text_folder
-        )
+    print(f'building passages_objects ...')
+    for datas in tqdm(documents_datas):
+        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(datas, path_to_text_folder)
         passages_objects.extend(french_passages_objects)
         passages_objects.extend(dutch_passages_objects)
 
@@ -34,7 +30,8 @@ def processing_storing_to_db(path_to_pdf_folder, path_to_text_folder, chromadb_c
     metadata_to_add = []
     limit = collection_size + len(passages_objects)
     ids_to_add = [str(i) for i in range(collection_size, limit)]
-    print(f'PROCESSING .....')
+
+    print(f'Computing Dense Vectors for each passages .....')
     for passage_object in tqdm(passages_objects):
         passage_embedding = embedding_function(passage_object.passage_text)
         embeddings_to_add.append(passage_embedding)

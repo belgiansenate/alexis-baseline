@@ -2,8 +2,8 @@ import csv
 import re
 import time
 import gradio as gr
-from document_retrieving_for_chroma import querying_to_db
-from embedding_function import SentenceBERTEmbedding
+from database_operations import querying_to_db, passages_storing
+from models import SentenceBERTEmbedding
 from vector_database_manager import ChromaClient, Mode
 
 embedder = SentenceBERTEmbedding()
@@ -11,10 +11,10 @@ collection_name = "test_collection_2"
 client = ChromaClient(mode=Mode.local, path_directory='chromadb')
 collection = client.get_or_create_collection(collection_name)
 
-
 ###################uncomment this to process and store the documents in the database###################
-# processing_storing_to_db(path_to_pdf_folder='documents', path_to_text_folder='extracted',
-#                          chromadb_client=client, collection_name=collection_name, embedding_function=embedder)
+passages_storing('Annals_datas.xlsx', path_to_text_folder='extracted',
+                 chromadb_client=client, collection_name=collection_name, embedding_function=embedder)
+
 
 def answer_concat(texts):
     results = []
