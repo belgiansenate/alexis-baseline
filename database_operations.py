@@ -3,13 +3,13 @@ from document_processing import build_passages_objects, build_pdf_object_via_hyp
 from vector_database_manager import ChromaClient
 
 
-def passages_storing(path_to_xl_file, path_to_text_folder, chromadb_client: ChromaClient, collection_name,
+def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_name,
                      embedding_function=None):
     """
     This function processes the passages_objects from a folder and stores them in a collection in the database.
+    :param embedding_function: embedding function to be used
     :param chromadb_client: ChromaClient object
     :param path_to_xl_file: path to the Excel file containing the metadata
-    :param path_to_text_folder: path to the folder containing the extracted text passages_objects
     :param collection_name: name of the collection (SVD_for_documents_retrieval)
     :return: None
     """
@@ -18,7 +18,7 @@ def passages_storing(path_to_xl_file, path_to_text_folder, chromadb_client: Chro
 
     print(f'building passages_objects ...')
     for datas in tqdm(documents_datas):
-        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(datas, path_to_text_folder)
+        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(datas)
         passages_objects.extend(french_passages_objects)
         passages_objects.extend(dutch_passages_objects)
 

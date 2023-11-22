@@ -11,8 +11,8 @@ collection_name = "test_collection_2"
 client = ChromaClient(mode=Mode.local, path_directory='chromadb')
 collection = client.get_or_create_collection(collection_name)
 
-###################uncomment this to process and store the documents in the database###################
-passages_storing('Annals_datas.xlsx', path_to_text_folder='extracted',
+##################uncomment this to process and store the documents in the database###################
+passages_storing('Annals_datas.xlsx',
                  chromadb_client=client, collection_name=collection_name, embedding_function=embedder)
 
 

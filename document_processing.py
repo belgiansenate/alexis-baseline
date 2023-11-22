@@ -5,16 +5,18 @@ import pandas as pd
 import requests
 from pypdf import PdfReader
 from passage_object import PassageObject
+import datetime
 
 """
     This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
 """
 
 
+# TODO add author
 class PdfObject:
     def __init__(self, pdf_id, act, date, legislature, start_page, end_page, link):
         self.id = str(pdf_id)
-        self.date = date
+        self.date = str(date)
         self.act = str(act)
         self.legislature = legislature
         self.start_page = start_page
@@ -27,16 +29,6 @@ class PdfObject:
                 )
 
 
-def get_document_metadata(document_file_path):
-    """
-    This function returns the metadata of a document
-    :param document_file_path: path to the document
-    :return: metadata of a document
-    """
-    reader = PdfReader(document_file_path)
-    return reader.metadata
-
-
 def transform_pdf_2_txt(path, output_file):
     """
     This function transforms a pdf file to a text file using pdftotext and poppler
@@ -46,10 +38,11 @@ def transform_pdf_2_txt(path, output_file):
     """
     # Generate a text rendering of a PDF file in the form of a list of lines.
     args = ['pdftotext', '-layout', path, output_file]
-    cp = sp.run(
-        args, stdout=sp.PIPE, stderr=sp.DEVNULL,
-        check=True, text=True
-    )
+    try:
+        sp.run(args, stdout=sp.PIPE, stderr=sp.DEVNULL, check=True, text=True)
+    except sp.CalledProcessError as e:
+        print(f'Error: {e}')
+        print(f'Error output: {e.output}')
 
 
 def split_document(text_files_path):
@@ -237,10 +230,14 @@ def join_lines(string):
     return ' '.join(joined_lines)
 
 
-def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_id=None):
+def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, pub_date=None, language=None):
     """
     This function retrieves the chunks from a document and returns the passages objects containing all the
-    information about the passage :param full_text_cleaned: :param contents_titles:
+    information about the passage
+    :param language: chunk language
+    :param full_text_cleaned:
+    :param contents_titles:
+    :param pub_date: date
     :param contents_titles: list of contents titles in the current document
     :param full_text_cleaned: the full text of the document cleaned
     :param document_id: document id
@@ -279,7 +276,7 @@ def retrieve_chunks_from_document(full_text_cleaned, contents_titles, document_i
             # dropping the passage from the full text by slicing
             full_text_cleaned = full_text_cleaned[next_content_start_index:]
 
-        passage_object = PassageObject(document_id, title[0], title[1], passage_text)
+        passage_object = PassageObject(document_id, title[0], title[1], pub_date, passage_text, language)
         passages.append(passage_object)
 
     return passages, contents_not_found
@@ -314,48 +311,45 @@ def download_pdf_from_website(link, path):
         print(f'Error: {e}')
 
 
-def build_passages_objects(pdf_object: PdfObject, text_folder_path):
+def build_passages_objects(pdf_object: PdfObject):
     """
     This function builds the passages objects from a document
     :param pdf_object: pdf object containing the document information
-    :param text_folder_path: path to the folder containing the extracted text documents
     :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
-    input_name = pdf_object.id + '.pdf'
-    local_path = 'pdf_files/' + input_name
+    pdf_file = pdf_object.id + '.pdf'
 
     # download pdf file from the website to the local path it's a provisional solution because the network doesn't
     # allow it caused by ssl certificate
-    download_pdf_from_website(pdf_object.hyperlink, local_path)
+    download_pdf_from_website(pdf_object.hyperlink, pdf_file)
 
     # transform pdf to text with output name = document title.txt
-    output_name = pdf_object.id + '.txt'
-    output_file_path = f'{text_folder_path}/{output_name}'
+    text_file = pdf_object.id + '.txt'
 
-    transform_pdf_2_txt(local_path, output_file_path)
+    transform_pdf_2_txt(pdf_file, text_file)
     # transform_pdf_2_txt(pdf_object.hyperlink, output_file_path)
 
     # if legislature is odd then the first page is in French else it is in Dutch
     if int(pdf_object.legislature) % 2 == 0:
-        dutch_text, french_text = split_document(output_file_path)
+        dutch_text, french_text = split_document(text_file)
     else:
-        french_text, dutch_text = split_document(output_file_path)
+        french_text, dutch_text = split_document(text_file)
 
     # preprocessing text
     french_text, french_contents_titles = preprocess_text(french_text)
     dutch_text, dutch_contents_titles = preprocess_text(dutch_text)
 
     # build passages objects and return them with the contents not found
-    french_passages_objects, contents_not_found_french = retrieve_chunks_from_document(
-        french_text, french_contents_titles, pdf_object.id
+    french_passages_objects, contents_not_found_french = get_chunks_from_text(
+        french_text, french_contents_titles, pdf_object.id, pdf_object.date, language='fr'
     )
-    dutch_passages_objects, contents_not_found_dutch = retrieve_chunks_from_document(
-        dutch_text, dutch_contents_titles, pdf_object.id
+    dutch_passages_objects, contents_not_found_dutch = get_chunks_from_text(
+        dutch_text, dutch_contents_titles, pdf_object.id, pdf_object.date, language='nl'
     )
 
-    # drop the pdf file and the text file
-    os.remove(local_path)
-    os.remove(output_file_path)
+    # drop the pdf file and the text file to save space
+    os.remove(pdf_file)
+    os.remove(text_file)
 
     return french_passages_objects, dutch_passages_objects, contents_not_found_french, contents_not_found_dutch
 
