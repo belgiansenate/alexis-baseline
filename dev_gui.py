@@ -1,22 +1,21 @@
 import csv
 import re
 import time
-from random import random
-import transformers
 import gradio as gr
 from database_operations import querying_to_db, passages_storing
 from models import SentenceBERTEmbedding
 from vector_database_manager import ChromaClient, Mode
 
+# TODO openxyl to read the excel file
+
 embedder = SentenceBERTEmbedding()
-model = transformers.AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
 collection_name = "test_collection_2"
 client = ChromaClient(mode=Mode.local, path_directory='chromadb')
 collection = client.get_or_create_collection(collection_name)
 
 ##################uncomment this to process and store the documents in the database###################
-passages_storing('Annals_datas.xlsx',
-                 chromadb_client=client, collection_name=collection_name, embedding_function=embedder)
+# passages_storing('Annals_datas.xlsx',
+#                  chromadb_client=client, collection_name=collection_name, embedding_function=embedder, records_limit=1)
 
 
 def build_prompt(query, contexts, language="fr"):
@@ -76,7 +75,6 @@ def echo_chunks(message, chat_history, n_result=1):
 
 def slow_echo(message, history, prompt, n_results=1):
     bot_message = retrieve_from_vector_db(message, n_results)
-    print(history)
     for i in range(len(bot_message)):
         time.sleep(0.01)
         yield bot_message[:i + 1]
@@ -98,7 +96,7 @@ with gr.Blocks() as demo:
                 context = gr.Textbox(label="Context")
                 answer = gr.Textbox(label="Answer")
             with gr.Row():
-                save_button = gr.Button(value="Save to Json")
+                save_button = gr.Button(value="Save to CSV")
                 gr.ClearButton([question, context, answer], value="Clear All")
     save_button.click(save_to_csv, [question, context, answer])
     msg.submit(echo_chunks, [msg, chatbot, n_results], [msg, chatbot])

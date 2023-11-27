@@ -1,6 +1,6 @@
 class PassageObject:
     def __init__(self, document_id, passage_title, page, date,  passage_text, language):
-        self.passage_text = passage_title + ' : ' + passage_text
+        self.passage_text = 'Titre : ' + passage_title + ' : ' + passage_text
         self.metadata = {'document_id': document_id,
                          'page': page,
                          'date': date,
