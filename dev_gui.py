@@ -2,24 +2,23 @@ import csv
 import re
 import time
 import gradio as gr
+
+from arguments import parse_args
 from database_operations import querying_to_db, passages_storing
 from models import SentenceBERTEmbedding
 from vector_database_manager import ChromaClient, Mode
 
 # TODO openxyl to read the excel file
-
-embedder = SentenceBERTEmbedding()
-collection_name = "test_collection_2"
-client = ChromaClient(mode=Mode.local, path_directory='chromadb')
-collection = client.get_or_create_collection(collection_name)
-
-##################uncomment this to process and store the documents in the database###################
-# passages_storing('Annals_datas.xlsx',
-#                  chromadb_client=client, collection_name=collection_name, embedding_function=embedder, records_limit=1)
+args = parse_args()
+if args.mode == Mode.local:
+    client = ChromaClient(mode=Mode.local, path_directory='chromadb')
+else:
+    client = ChromaClient(host=args.host, mode=Mode.host, port_number=args.port)
+    client.get_or_create_collection(args.collection)
 
 
 def build_prompt(query, contexts, language="fr"):
-    if language == "de":
+    if language == "nl":
         return (f"Beantwoord de vraag aan de hand van de gegeven context. Je antwoord moet in je eigen woorden zijn. "
                 f"\n\n Context: {contexts} \n\n Vraag: {query} \n\n Antwoord:"),
     elif language == "fr":
@@ -55,8 +54,8 @@ def save_to_csv(question, context, answer):
 
 def retrieve_from_vector_db(message, n_results=1):
     try:
-        results = querying_to_db(chroma_client=client, collection_name=collection_name, nl_query=message,
-                                 embedding_model=embedder, n_results=n_results)
+        results = querying_to_db(chroma_client=client, collection_name=args.collection, nl_query=message,
+                                 embedding_model=args.embedding, n_results=n_results)
     except Exception as e:
         print(e)
         return "Sorry, I couldn't find any answer to your question", message

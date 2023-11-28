@@ -78,6 +78,7 @@ def split_document(text_files_path):
 
     return '\n'.join(left_text), '\n'.join(right_text)
 
+
 def count_contents_title(text):
     """
     This function counts the number of contents titles in a text
@@ -358,4 +359,3 @@ def build_pdf_object_via_hyperlink(path_to_excel_file,
         pdf_objects.append(pdf_object)
 
     return pdf_objects
-
