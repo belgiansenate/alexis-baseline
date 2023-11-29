@@ -66,10 +66,10 @@ def split_document(text_files_path):
     try:
         with open(text_files_path, 'r', encoding='utf-8') as file:
             for line in file:
-                if re.search(pattern_head_of_page, line):
+                if re.search(pattern_head_of_page, line) or re.search(r'\b(Bijlage|Annexe)\b', line):
                     continue
 
-                if re.search(r'\b(Sommaire|Inhoudsopgave)\b', line) or re.search(r'\b(Bijlage|Annexe)\b', line):
+                if re.search(r'\b(Sommaire|Inhoudsopgave)\b', line):
                     first_page_encountered = True
                     continue
 
@@ -96,17 +96,21 @@ def split_document(text_files_path):
     return '\n'.join(left_text), '\n'.join(right_text)
 
 
+def is_matching(string, patterns):
+    return any(re.search(pattern, string) for pattern in patterns)
+
+
 def count_contents_title(text):
     """
     This function counts the number of contents titles in a text
     :param text: to be processed
     :return: list of contents titles end check points
     """
-    pattern_summary = r'\.{2}.\d'  # Example: content.....1 or content.....2 in a single line
+    pattern_summary = [r'\.{3}p\.\s\d', r'\.{2}.\d']  # Example: content.....1 or content.....2 in a single line
     text = text.split('\n')
     check_points = []
     for line in text:
-        if re.search(pattern_summary, line):
+        if is_matching(line, pattern_summary):
             check_points.append(line)
     return check_points
 
