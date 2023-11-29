@@ -5,17 +5,18 @@ FROM centos:7
 WORKDIR /senbot-app
 
 # Install necessary dependencies
-RUN yum install -y epel-release && yum update -y && \
-    yum install python-pip && \
-    yum install tar && \
-    yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel && \
-    wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz && \
-    ./configure --enable-optimizations && \
-    make altinstall && \
-    rm Python-3.9.6.tgz && \
-    yum clean all && \
-    rm -rf /var/cache/yum \
-    yum python3-pip
+RUN yum install -y epel-release
+RUN yum update -y
+RUN yum install python-pip
+RUN yum install tar
+RUN yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+RUN wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+RUN ./configure --enable-optimizations
+RUN make altinstall
+RUN rm Python-3.9.6.tgz
+RUN yum clean all
+RUN rm -rf /var/cache/yum
+RUN yum python3-pip
 
 
 # Copy the requirements file and install dependencies

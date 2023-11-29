@@ -90,6 +90,7 @@ def echo_chunks(message, chat_history, n_result=1):
     return "", chat_history
 
 
+# TODO add generation
 def slow_echo(message, history, prompt, n_results=1):
     bot_message = retrieve_from_vector_db(message, n_results)
     for i in range(len(bot_message)):
@@ -118,7 +119,7 @@ with gr.Blocks() as demo:
     save_button.click(save_to_csv, [question, context, answer])
     msg.submit(echo_chunks, [msg, chatbot, n_results], [msg, chatbot])
 
-    with gr.Tab("generation2"):
+    with gr.Tab("generation"):
         gr.ChatInterface(slow_echo,
                          additional_inputs=[
                              gr.Textbox(placeholder="fill the prompt", label="prompt"),
