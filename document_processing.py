@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import subprocess as sp
@@ -89,7 +90,8 @@ def count_contents_title(text):
     :param text: to be processed
     :return: list of contents titles end check points
     """
-    pattern_summary = [r'\.{3}p\.\s\d', r'\.{2}.\d']  # Example: content.....1 or content.....2 in a single line
+    # Example: content.....1 or content.....2 in a single line
+    pattern_summary = [r'\.{2}p\.\s\d', r'\.{2}.\d', r'\.{2}\sp\.\s\d', r'p\.\s\d']
     text = text.split('\n')
     check_points = []
     for line in text:
@@ -187,8 +189,18 @@ def preprocess_content(content):
     This function preprocesses the content by removing the page number and the extra spaces
     :return: content and page number
     """
-    noised_page_number, _, _ = match_pattern_with_position(r'\.{2,}.\d+', content)
-    content = content.replace(noised_page_number, '')
+    extra_pattern = [r'\.{2,}p\.\s\d+', r'\.{2,}\sp\.\s\d+', r'p\.\s\d+']
+    if is_matching(content, extra_pattern):
+        for pattern in extra_pattern:
+            noised_page_number, _, _ = match_pattern_with_position(pattern, content)
+            if noised_page_number:
+                content = content.replace(noised_page_number, '')
+                noised_page_number = noised_page_number.replace('p', '')
+                break
+    else:
+        noised_page_number, _, _ = match_pattern_with_position(r'\.{2,}.\d+', content)
+        content = content.replace(noised_page_number, '')
+
     page_number, _, _ = match_pattern_with_position(r'\d+', noised_page_number)
     content = content.strip()
     return content, page_number if page_number else None
@@ -293,9 +305,19 @@ def download_pdf_from_website(link, path):
     try:
         # avoid ssl certificate error
         r = requests.get(link, verify=False)
+        logging.captureWarnings(True)
         open(path, 'wb').write(r.content)
     except Exception as e:
         print(f'Error: {e}')
+
+
+def remove_empty_passages(passages_objects):
+    """
+    This function removes empty passages from a list of passages objects
+    :param passages_objects: list of passages objects
+    :return: list of passages objects without empty passages
+    """
+    return [passage_object for passage_object in passages_objects if passage_object.passage_text.strip() != '']
 
 
 def build_passages_objects(pdf_object: PdfObject):

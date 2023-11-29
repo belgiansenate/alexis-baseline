@@ -1,6 +1,6 @@
 import string
 from tqdm import tqdm
-from document_processing import build_passages_objects, build_pdf_object_via_hyperlink
+from document_processing import build_passages_objects, build_pdf_object_via_hyperlink, remove_empty_passages
 from vector_database_manager import ChromaClient
 
 
@@ -24,7 +24,13 @@ def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_
         passages_objects.extend(french_passages_objects)
         passages_objects.extend(dutch_passages_objects)
 
+    # remove empty passages
+    remove_empty_passages(passages_objects)
+
+    # load the collection
     main_collection = chromadb_client.get_collection(collection_name)
+
+    # get the number of records in the collection
     collection_size = main_collection.count()
 
     passages_to_add = []
@@ -34,7 +40,9 @@ def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_
     ids_to_add = [str(i) for i in range(collection_size, limit)]
     print(f'\nComputing Dense Vectors for each passages .....')
     for passage_object in tqdm(passages_objects):
-        passage_embedding = embedding_function(passage_object.passage_text)
+        # store title + text
+        text_2_store = passage_object.metadata['passage_title'] + ' ' + passage_object.passage_text
+        passage_embedding = embedding_function(text_2_store)
         embeddings_to_add.append(passage_embedding)
         passages_to_add.append(passage_object.passage_text)
         metadata_to_add.append(passage_object.metadata)
