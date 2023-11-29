@@ -3,6 +3,10 @@ from tqdm import tqdm
 from document_processing import build_passages_objects, build_pdf_object_via_hyperlink, remove_empty_passages
 from vector_database_manager import ChromaClient
 
+'''
+This file contains the functions used to store the passages_objects in the database and to query the database
+'''
+
 
 def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_name:string, records_limit=None,
                      embedding_function=None):

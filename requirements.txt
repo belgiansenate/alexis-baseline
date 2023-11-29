@@ -1,5 +1,6 @@
 requests
 poppler
+torch
 pdftotext
 sentence-transformers
 transformers
@@ -10,3 +11,6 @@ scikit-learn
 nltk
 chromadb
 openpyxl
+tqdm
+pandas
+```

@@ -2,7 +2,6 @@ import argparse
 import configparser
 import os
 import subprocess
-from arguments import parse_args
 
 
 def launch_first_install_process(limit=None):

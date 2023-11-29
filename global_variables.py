@@ -1,4 +1,7 @@
 from models import SentenceBERTEmbedding
+'''
+    This file contains the global variables that are used in the project
+'''
 
 collection_name = 'SVD_for_documents_retrieval'
 local_collection_path = 'chromadb'

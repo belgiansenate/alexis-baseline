@@ -2,10 +2,8 @@ import csv
 import re
 import time
 import gradio as gr
-
 from arguments import parse_args
-from database_operations import querying_to_db, passages_storing
-from models import SentenceBERTEmbedding
+from database_operations import querying_to_db
 from vector_database_manager import ChromaClient, Mode
 
 # TODO openxyl to read the excel file
@@ -18,6 +16,13 @@ else:
 
 
 def build_prompt(query, contexts, language="fr"):
+    """
+    Build the prompt to be used in the generation
+    :param query:  question
+    :param contexts: set of contexts related to the question and retrieved from the database
+    :param language: language of the question
+    :return: prompt
+    """
     if language == "nl":
         return (f"Beantwoord de vraag aan de hand van de gegeven context. Je antwoord moet in je eigen woorden zijn. "
                 f"\n\n Context: {contexts} \n\n Vraag: {query} \n\n Antwoord:"),
@@ -28,11 +33,17 @@ def build_prompt(query, contexts, language="fr"):
         raise ValueError("Language not supported")
 
 
-def answer_concat(texts, metadatas):
+def answer_concat(texts, metadata):
+    """
+    Concatenate the results to be displayed
+    :param texts: texts to be concatenated
+    :param metadata: metadata to be concatenated
+    :return:   results
+    """
     results = []
     for i, text in enumerate(texts):
         results.append(
-            f'Result {i + 1}( Document ID : {metadatas[i]["document_id"]} === Title : {metadatas[i]["passage_title"]} === Page: {metadatas[i]["page"]}) \n {text}')
+            f'Result {i + 1}( Document ID : {metadata[i]["document_id"]} === Title : {metadata[i]["passage_title"]} === Page: {metadata[i]["page"]}) \n {text}')
 
     return '\n'.join(results)
 
@@ -42,6 +53,13 @@ drop_special_char = lambda x: re.sub(r'[\n\r\t;,:!?()\[\]{}=+\-*/\\]', '', x)
 
 
 def save_to_csv(question, context, answer):
+    """
+    Save the question, context and answer to a csv file
+    :param question: question
+    :param context: context
+    :param answer:  answer
+    :return: None
+    """
     if question == "" or context == "" or answer == "":
         gr.Warning("Please fill all the fields")
         return
