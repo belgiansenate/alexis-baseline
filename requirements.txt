@@ -1,0 +1,12 @@
+requests
+poppler
+pdftotext
+sentence-transformers
+transformers
+gradio
+pandas
+numpy
+scikit-learn
+nltk
+chromadb
+openpyxl

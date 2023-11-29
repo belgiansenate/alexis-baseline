@@ -1,32 +1,15 @@
 import os
 import re
 import subprocess as sp
+from pdf_object import PdfObject
 import pandas as pd
 import requests
-from pypdf import PdfReader
+
 from passage_object import PassageObject
-import datetime
 
 """
     This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
 """
-
-
-# TODO add author
-class PdfObject:
-    def __init__(self, pdf_id, act, date, legislature, start_page, end_page, link):
-        self.id = str(pdf_id)
-        self.date = str(date)
-        self.act = str(act)
-        self.legislature = legislature
-        self.start_page = start_page
-        self.end_page = end_page
-        self.hyperlink = link + self.id
-
-    def __str__(self):
-        return (f'Document_records_object: {self.id}, from document {self.date},'
-                f' on page {self.legislature}'
-                )
 
 
 def transform_pdf_2_txt(path, output_file):
@@ -360,18 +343,23 @@ def build_passages_objects(pdf_object: PdfObject):
 
 def build_pdf_object_via_hyperlink(path_to_excel_file,
                                    hyperlink="https://www.senate.be/www/webdriver?MItabObj=pdf&MIcolObj=pdf"
-                                             "&MInamObj=pdfid&MItypeObj=application/pdf&MIvalObj="):
+                                             "&MInamObj=pdfid&MItypeObj=application/pdf&MIvalObj=", limit=None):
     """
-    This function returns the documents from the database
+    This function returns the records from the database
+    :param limit: limit the number of records to be returned
     :param hyperlink: hyperlink is the path to document  (hyperlink + document_id)
-    :param path_to_excel_file: path to the Excel file containing the documents
-    :return:
+    :param path_to_excel_file: path to the Excel file containing the records
+    :return: a list of pdf objects
     """
     df = pd.read_excel(path_to_excel_file)
-    documents = df.to_dict('records')
-    documents_information = [PdfObject(document['pdfid'], document['handelingenid'], document['datum'],
-                                       document['legislatuur'], document['beginblz'],
-                                       document['eindblz'], hyperlink)
-                             for document in documents]
+    records = df.to_dict('records')
+    pdf_objects = []
+    for i, document in enumerate(records):
+        if limit and i == limit:
+            break
+        pdf_object = PdfObject(document['pdfid'], document['handelingenid'], document['datum'],
+                               document['legislatuur'], document['beginblz'],
+                               document['eindblz'], hyperlink)
+        pdf_objects.append(pdf_object)
 
-    return documents_information
+    return pdf_objects

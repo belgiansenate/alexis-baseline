@@ -1,24 +1,26 @@
+import string
 from tqdm import tqdm
 from document_processing import build_passages_objects, build_pdf_object_via_hyperlink
 from vector_database_manager import ChromaClient
 
 
-def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_name,
+def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_name:string, records_limit=None,
                      embedding_function=None):
     """
     This function processes the passages_objects from a folder and stores them in a collection in the database.
+    :param records_limit: number of records to be added to the database
     :param embedding_function: embedding function to be used
     :param chromadb_client: ChromaClient object
     :param path_to_xl_file: path to the Excel file containing the metadata
     :param collection_name: name of the collection (SVD_for_documents_retrieval)
     :return: None
     """
-    documents_datas = build_pdf_object_via_hyperlink(path_to_xl_file)
+    pdf_objects = build_pdf_object_via_hyperlink(path_to_xl_file, limit=records_limit)
     passages_objects = []
 
     print(f'building passages_objects ...')
-    for datas in tqdm(documents_datas):
-        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(datas)
+    for pdf_object in tqdm(pdf_objects):
+        french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(pdf_object)
         passages_objects.extend(french_passages_objects)
         passages_objects.extend(dutch_passages_objects)
 
@@ -30,8 +32,7 @@ def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_
     metadata_to_add = []
     limit = collection_size + len(passages_objects)
     ids_to_add = [str(i) for i in range(collection_size, limit)]
-
-    print(f'Computing Dense Vectors for each passages .....')
+    print(f'\nComputing Dense Vectors for each passages .....')
     for passage_object in tqdm(passages_objects):
         passage_embedding = embedding_function(passage_object.passage_text)
         embeddings_to_add.append(passage_embedding)
