@@ -6,7 +6,7 @@ from arguments import parse_args
 from database_operations import querying_to_db
 from vector_database_manager import ChromaClient, Mode
 
-# TODO openxyl to read the excel file
+
 args = parse_args()
 if args.mode == Mode.local:
     client = ChromaClient(mode=Mode.local, path_directory='chromadb')
