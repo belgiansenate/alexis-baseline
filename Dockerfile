@@ -5,7 +5,7 @@ RUN pip install -r requirements.txt
 
 RUN apt-get update && apt-get install -y python3-opencv
 
-WORKDIR /code
+WORKDIR /senbot
 
 EXPOSE 5000
 # Specify the command to run on container start
