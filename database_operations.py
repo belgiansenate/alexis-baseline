@@ -2,12 +2,13 @@ import string
 from tqdm import tqdm
 from document_processing import build_passages_objects, build_pdf_object_via_hyperlink, remove_empty_passages
 from vector_database_manager import ChromaClient
+import nltk
 
 '''
 This file contains the functions used to store the passages_objects in the database and to query the database
 '''
 
-
+#TODO: filter passages (remove those without text (only title)) from 57000 to 48000
 def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_name:string, records_limit=None,
                      embedding_function=None):
     """
@@ -22,15 +23,15 @@ def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_
     pdf_objects = build_pdf_object_via_hyperlink(path_to_xl_file, limit=records_limit)
     passages_objects = []
 
-    print(f'building passages_objects ...')
+    print(f'building passages_objects ...\n')
     for pdf_object in tqdm(pdf_objects):
         french_passages_objects, dutch_passages_objects, _, _ = build_passages_objects(pdf_object)
         passages_objects.extend(french_passages_objects)
         passages_objects.extend(dutch_passages_objects)
 
     # remove empty passages
-    remove_empty_passages(passages_objects)
-
+    filtered_passages = remove_empty_passages(passages_objects)
+    print(len(filtered_passages))
     # load the collection
     main_collection = chromadb_client.get_collection(collection_name)
 
@@ -40,30 +41,32 @@ def passages_storing(path_to_xl_file, chromadb_client: ChromaClient, collection_
     passages_to_add = []
     embeddings_to_add = []
     metadata_to_add = []
-    limit = collection_size + len(passages_objects)
-    ids_to_add = [str(i) for i in range(collection_size, limit)]
+    ids_to_add = []
+    limit = collection_size + len(filtered_passages)
+    #ids_to_add = [str(i) for i in range(collection_size, limit)]
     print(f'\nComputing Dense Vectors for each passages .....')
-    for passage_object in tqdm(passages_objects):
+    for i, passage_object in enumerate(tqdm(filtered_passages)) :
         # store title + text
         text_2_store = passage_object.metadata['passage_title'] + ' ' + passage_object.passage_text
         passage_embedding = embedding_function(text_2_store)
-        embeddings_to_add.append(passage_embedding)
+        """ids_to_add.append(str(i))
         passages_to_add.append(passage_object.passage_text)
-        metadata_to_add.append(passage_object.metadata)
-    try:
-        main_collection.upsert(ids=ids_to_add,
-                            documents=passages_to_add,
-                            embeddings=embeddings_to_add,
-                            metadatas=metadata_to_add
-                            )
-    except Exception as e:
-        print(f'Error: {e}')
-        print(f'Only {len(passages_to_add)} passages_objects were added to the collection {collection_name}')
+        embeddings_to_add.append(passage_embedding)
+        metadata_to_add.append(passage_object.metadata)"""
+        try:
+            main_collection.add(ids=str(i),
+                                documents=passage_object.passage_text,
+                                embeddings=passage_embedding,
+                                metadatas=passage_object.metadata
+                                )
+        except Exception as e:
+            print(f'Error: {e}')
+            print(f'Only {len(passages_to_add)} passages_objects were added to the collection {collection_name}')
 
     print(f'{len(passages_to_add)} passages_objects were added to the collection {collection_name}')
 
-
-def querying_to_db(chroma_client, collection_name, nl_query, embedding_model, n_results=3):
+#TODO: filter on where documents do not contain empty string (at least for the moment)
+def querying_to_db(chroma_client, collection_name, nl_query, embedding_model, n_results):
     """
     This function queries the database using a query and returns the results
     :param n_results: number of results to be returned
@@ -78,7 +81,8 @@ def querying_to_db(chroma_client, collection_name, nl_query, embedding_model, n_
         query_embeddings = embedding_model(nl_query)
         results_set = collection.query(
             query_embeddings=[query_embeddings],
-            n_results=n_results
+            n_results=n_results,
+            include=["documents", 'distances', 'metadatas']
         )
     except Exception as e:
         print(f'Error: {e}')

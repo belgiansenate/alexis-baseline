@@ -13,6 +13,7 @@ class ChromaClient:
 
         if mode == Mode.host:
             self.chroma_client = chromadb.HttpClient(host=host, port=port_number)
+            print(self.chroma_client._producer.max_batch_size)
         elif mode == Mode.local:
             self.chroma_client = chromadb.PersistentClient(path=path_directory)
         self.embedding_function = embedding_function
@@ -30,6 +31,7 @@ class ChromaClient:
 
     def get_or_create_collection(self, collection_name):
         if self.embedding_function is None:
-            return self.chroma_client.get_or_create_collection(name=collection_name)
+            return self.chroma_client.get_or_create_collection(name=collection_name, metadata={"hnsw:space": "cosine"})
         return self.chroma_client.get_or_create_collection(name=collection_name,
-                                                           embedding_function=self.embedding_function)
+                                                           embedding_function=self.embedding_function,
+                                                           metadata={"hnsw:space": "cosine"})

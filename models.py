@@ -5,8 +5,11 @@ from chromadb import EmbeddingFunction, Embeddings
 
 
 # TODO: Finetune BERT or S-BERT model for senate documents
+
+#all-MiniLM-L6-v2 (fast but less efficient, the default one)
+#all-mpnet-base-v2
 class SentenceBERTEmbedding(EmbeddingFunction):
-    def __init__(self, model_name='all-MiniLM-L6-v2'):
+    def __init__(self, model_name='all-mpnet-base-v2'):
         # initialize tokenizer and model
         self.model = SentenceTransformer(model_name, device='cuda' if torch.cuda.is_available() else 'cpu')
 

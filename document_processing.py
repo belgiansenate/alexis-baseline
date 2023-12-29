@@ -229,7 +229,8 @@ def join_lines(string):
     return ' '.join(joined_lines)
 
 
-def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, pub_date=None, language=None):
+#TODO: Add explanations about the two last parameters (added by amar)
+def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, pub_date=None, language=None, legislature=None, num_legislature=None):
     """
     This function retrieves the chunks from a document and returns the passages objects containing all the
     information about the passage
@@ -275,7 +276,7 @@ def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, p
             # dropping the passage from the full text by slicing
             full_text_cleaned = full_text_cleaned[next_content_start_index:]
 
-        passage_object = PassageObject(document_id, title[0], title[1], pub_date, passage_text, language)
+        passage_object = PassageObject(document_id, title[0], title[1], pub_date, passage_text, language, legislature, num_legislature)
         passages.append(passage_object)
 
     return passages, contents_not_found
@@ -350,10 +351,12 @@ def build_passages_objects(pdf_object: PdfObject):
 
     # build passages objects and return them with the contents not found
     french_passages_objects, contents_not_found_french = get_chunks_from_text(
-        french_text, french_contents_titles, pdf_object.id, pdf_object.date, language='fr'
+        french_text, french_contents_titles, pdf_object.id, pdf_object.date, language='fr',
+        legislature=pdf_object.legislature, num_legislature=pdf_object.num
     )
     dutch_passages_objects, contents_not_found_dutch = get_chunks_from_text(
-        dutch_text, dutch_contents_titles, pdf_object.id, pdf_object.date, language='nl'
+        dutch_text, dutch_contents_titles, pdf_object.id, pdf_object.date, language='nl',
+        legislature=pdf_object.legislature, num_legislature=pdf_object.num
     )
 
     # drop the pdf file and the text file to save space
@@ -380,7 +383,7 @@ def build_pdf_object_via_hyperlink(path_to_excel_file,
         if limit and i == limit:
             break
         pdf_object = PdfObject(document['pdfid'], document['handelingenid'], document['datum'],
-                               document['legislatuur'], document['beginblz'],
+                               document['legislatuur'], document['nummer'], document['beginblz'],
                                document['eindblz'], hyperlink)
         pdf_objects.append(pdf_object)
 
