@@ -1,7 +1,5 @@
 requests
-poppler
 torch
-pdftotext
 sentence-transformers
 transformers
 gradio
@@ -12,5 +10,5 @@ nltk
 chromadb
 openpyxl
 tqdm
-pandas
-```
+llama-cpp-python
+pdftotext
