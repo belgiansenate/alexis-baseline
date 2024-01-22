@@ -10,5 +10,4 @@ nltk
 chromadb
 openpyxl
 tqdm
-llama-cpp-python
 pdftotext
