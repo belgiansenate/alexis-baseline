@@ -6,3 +6,5 @@ notebooks/
 Prompts
 Tried Models
 chromadb/
+.idea/
+Models/
