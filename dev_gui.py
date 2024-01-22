@@ -98,67 +98,6 @@ def echo_chunks(message, chat_history, n_result=1):
     time.sleep(2)
     return "", chat_history
 
-
-# TODO add generation
-# TODO: What if we change the question ? need to change sources
-# TODO: add links into pdf files.
-# TODO: Work on with the history.
-def slow_echo(message, history, prompt, n_results=1, temperature=0.1, top_p=0.5, max_new_tokens=300):
-    _, metadatas, bot_message = retrieve_from_vector_db(message, n_results)
-
-    llm = Llama(model_path="Models/zephyr-7b-beta.Q4_K_M.gguf", n_ctx=32000, n_batch=3)
-
-    input_text = ""
-    if metadatas[0]["language"] == 'fr':
-        input_text = f""" use the following context to answer the question. If you do not know the answer, 
-        just say that you do not know. Answer in French. Give details and source from where you get the answer.
-        
-        {bot_message}
-    
-        Question: {message}
-        Answer:
-        Source: Give the source here.
-        """
-    elif metadatas[0]["language"] == 'nl':
-        input_text = f""" use the following context to answer the question. If you do not know the answer, 
-        just say that you do not know. Answer in Dutch. Give details.
-
-        {bot_message}
-
-        Question: {message}
-        Answer:
-        Source: Give the source here.
-        """
-
-    input_prompt = f"""<|system|>
-    You are a chatbot who always responds in the style of a lawyer. 
-    </s>
-    <|user|>
-    {input_text}
-    </s>
-    <|assistant|>"""
-
-    output = llm(
-        input_prompt,
-        max_tokens=max_new_tokens,
-        temperature=temperature,
-        top_p=top_p,
-        echo=False,
-        stop=["#"],
-    )
-    output_text = output['choices'][0]["text"].strip()
-    print(output_text)
-    for i in range(len(output_text)):
-        time.sleep(0.01)
-        yield output_text[:i + 1]
-#css = """
-##chatbot{
-#background: #E3F2FD;
-#}
-#accordion {
-#background: #E3F2FD;
-#}
-#"""
 with gr.Blocks() as demo:
     with gr.Tab("retrieval"):
         with gr.Group():
@@ -179,23 +118,7 @@ with gr.Blocks() as demo:
                 gr.ClearButton([question, context, answer], value="Clear All")
     save_button.click(save_to_csv, [question, context, answer])
     msg.submit(echo_chunks, [msg, chatbot, n_results], [msg, chatbot])
-
-    with gr.Tab("generation"):
-        chatbot = gr.Chatbot(label="Sen Chatbot", show_label=True, container=True, render=False,
-                             height=400
-                             )
-        gr.ChatInterface(slow_echo,
-                         chatbot=chatbot,
-                         additional_inputs=[
-                             gr.Textbox(placeholder="fill the prompt", label="prompt", scale=2, render=False),
-                             gr.Slider(minimum=1, maximum=10, step=1, label="n_results", info="Number of relevant passages to be used", scale=1, render=False),
-                             gr.Slider(minimum=0, maximum=1, step=0.05, label="temperature", info="Value used to modulate the next token probabilities", scale=1, render=False),
-                             gr.Slider(minimum=0, maximum=1, step=0.1, label="top_p", info="A probability threshold for generating the output. If < 1.0, only keep the top tokens with cumulative probability >= top_p (nucleus filtering)", scale=1, render=False),
-                             gr.Slider(minimum=0, maximum=512, step=8, label="max_new_tokens", info="The maximum number of tokens the model should generate as output", scale=1, render=False)
-                         ],
-                         additional_inputs_accordion=gr.Accordion("Advanced settings", open=False, render=False)
-                         )
-
+    
 if __name__ == "__main__":
     demo.queue()
     demo.launch()
