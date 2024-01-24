@@ -8,9 +8,6 @@ from arguments import parse_args
 from database_operations import querying_to_db
 from vector_database_manager import ChromaClient, Mode
 
-from llama_cpp import Llama
-
-
 args = parse_args()
 if args.mode == Mode.local:
     client = ChromaClient(mode=Mode.local, path_directory='chromadb')
@@ -121,4 +118,4 @@ with gr.Blocks() as demo:
     
 if __name__ == "__main__":
     demo.queue()
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", server_port=5000)
