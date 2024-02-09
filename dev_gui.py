@@ -54,7 +54,12 @@ def answer_concat(texts, metadata):
 
 
 # remove all special characters
-drop_special_char = lambda x: re.sub(r'[\n\r\t;,:!?()\[\]{}=+\-*/\\]', '', x)
+def drop_special_char(x):
+    first_pattern = re.sub(r'[\n\r\t|–]', '', x)
+    second_pattern = re.sub(r' {2,}', ' ', first_pattern)
+    cleaned_string = re.sub(r'\.([a-zA-Z])', r'. \1', second_pattern)
+
+    return cleaned_string
 
 
 def save_to_csv(question, context, answer):
