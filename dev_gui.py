@@ -37,6 +37,7 @@ def build_prompt(query, contexts, language="fr"):
 def date_printing(date):
     date_format = '%Y-%m-%d %H:%M:%S'
     return ((datetime.strptime(date, date_format)).date()).strftime("%d/%m/%Y")
+    
 def answer_concat(texts, metadata):
     """
     Concatenate the results to be displayed
@@ -45,12 +46,12 @@ def answer_concat(texts, metadata):
     :return:   results
     """
     results = []
-    date_format = '%Y-%m-%d %H:%M:%S'
     for i, text in enumerate(texts):
         results.append(
-            f'Source {i + 1}({metadata[i]["leg_title"]}, du {((datetime.strptime(metadata[i]["date"], date_format)).date()).strftime("%d/%m/%Y")}, titre : {metadata[i]["passage_title"]}, p.{metadata[i]["page"]}) \n {text}')
+            f"<span style='color:red;'>Source {i + 1} ({metadata[i]['leg_title']}, du {date_printing(metadata[i]['date'])},"
+            f"titre : {metadata[i]['passage_title']}, p.{metadata[i]['page']}).</span> \n {text}")
 
-    return '\n'.join(results)
+    return '\n\n'.join(results)
 
 
 # remove all special characters
