@@ -5,7 +5,8 @@ The Belgian Senate is an important institution that generates a large quantity o
 
 # Approach
 
-We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on given a question as an input, it retrieves the most likely relevant passages from the datastore and finally we have a generator which takes a question and relevant passages as input and generate an answer in the output. 
+We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on given a question as an input, it retrieves the most likely relevant passages from the datastore and finally we have a generator which takes a question and relevant passages as input and generate an answer in the output. The next figure shows how this can be designed.
 
+![1695787886133](https://github.com/belgiansenate/senbot-baseline/assets/56476929/862d87fa-e806-41cd-bca0-3b8e6012b8a5)
 
-
+(source: [https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/](https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/)
