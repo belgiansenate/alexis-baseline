@@ -9,4 +9,4 @@ We decided to use an approach based on a Retrieval Augmented Generation (RAG) ar
 
 ![1695787886133](https://github.com/belgiansenate/senbot-baseline/assets/56476929/862d87fa-e806-41cd-bca0-3b8e6012b8a5)
 
-(source: [https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/](https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/)
+(source: [https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/](https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/) )
