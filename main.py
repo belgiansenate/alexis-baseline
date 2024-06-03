@@ -58,3 +58,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     check_first_install(limit=args.limit)
+    launch_subsequent_install_process()
