@@ -16,7 +16,6 @@ from langchain_core.output_parsers import StrOutputParser
 from gradio import Slider
 
 from arguments import parse_args
-from database_operations import querying_to_db
 from vector_database_manager import ChromaClient, Mode
 from global_variables import local_collection_path, cross_encoder, embeddings_all_MiniLM_L6_V2, reranker
 
