@@ -230,15 +230,16 @@ title_markdown = ("""
 </div>
 <h5 style="font-size: 16px;"> \u26A0\uFE0F Guide \u26A0\uFE0F: The main goal of the guide is to explain how to use the retriever and the generator to ask and get answers from the conversationnal agent</h5>
 <ol style="margin-left: 20px; font-size: 16px">
-    <li>First, the retriever is used to get the passages from the database used by the chatbot.</li>
-    <li>You have to choose the number of passages to look for in both retrievers (allMini & BGE)</li>
-    <li>Since it is a first version which is not complete, you have to chose the number of passages you want.</li>
     <li>Please chose the language you want (nl or fr)</li>
-    <li> Please select the model you want to use for the generation, either Llama 3 8B or Aya 23 35B. The second model takes too much time but performs in both french and dutch</li>
+    <li>First, the retriever is used to get the passages from the database used by the chatbot.</li>
+    <li>You have to choose the number of passages to look for in both retrievers (allMini & BGE).</li>
+    <li>Please select the number of final results you want (Number of final passages).</li>
+    <li> The higher the number of final passages, the longer the computation time</li>
+    <li> Please select the model you want to use for the generation, either Llama 3 8B or Aya 23 35B. The second model takes too much time but performs in both french and dutch.</li>
     <li> Llama 3 in not capable to answer in dutch </li>
 </ol>
 
-<p style="border: 2px solid black; padding: 10px; display: inline-block;"> <strong> **Note**: This version is not perfect since it will return some passages which are not related to the question \U0001F605. The goal when building the dataset is to specialize the chatbot on the Senate documents by: training, testing and validation. Even if we do not use it for training, it stills important to have it.</strong></p>
+<p style="border: 2px solid black; padding: 10px; display: inline-block;"> <strong> **Note**: This version is not perfect. It may return some passages which are not related to the question \U0001F605. It uses open source models with lower precision to run them locally.</strong></p>
 
 """)
 with gr.Blocks() as demo:
@@ -326,4 +327,4 @@ with gr.Blocks() as demo:
 
 if __name__ == "__main__":
     demo.queue()
-    demo.launch(auth=("sntUser", "snt2024Passw"), server_name="0.0.0.0", server_port=5000)
+    demo.launch(auth=("sntUser", "snt2024Passw"), server_name="172.16.0.120", server_port=5000)
