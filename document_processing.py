@@ -44,14 +44,29 @@ def split_document(text_files_path):
     # match left text when it is more than 3 spaces(the right text is always less than 3 spaces)
     pattern_left_text = r'.+\s{3,}'
 
+    pattern = r'^(Bijlage\s+Annexe|Annexe\s+Bijlage)$'
+    # Compile the regex pattern
+    regex = re.compile(pattern)
     # if the first pattern head of page is encountered then the first page is passed we can start to extract the text
     first_page_encountered = False
+    first_occ = True
 
     try:
         with open(text_files_path, 'r', encoding='utf-8') as file:
             for line in file:
-                if re.search(pattern_head_of_page, line) or re.search(r'\b(Bijlage|Annexe)\b', line):
+                if re.search(pattern_head_of_page, line):
                     continue
+
+                if regex.match(line.strip()):
+                    # If it does, check if it's not the first occurrence
+                    if "Bijlage" in line.strip() and "Annexe" in line.strip() and first_occ:
+                        # If it's not the first occurrence, print the line and break the loop
+                        first_occ = False
+                        continue
+                    else:
+                        # If it's the first occurrence, set the flag to False
+                        #print(line.strip())
+                        break
 
                 if re.search(r'\b(Sommaire|Inhoudsopgave)\b', line):
                     first_page_encountered = True
@@ -67,10 +82,16 @@ def split_document(text_files_path):
 
                     ##remove if it only white spaces
                     if line_2_add.strip() != '':
-                        left_text.append(line_2_add)
+                        if line_2_add.strip() == 'o' or line_2_add.strip() == 'e' or line_2_add.strip() == "er" or line_2_add.strip() == "os" or line_2_add.strip() == "ste":
+                            continue
+                        else:
+                            left_text.append(line_2_add)
 
                     if dutch_line.strip() != '' or dutch_line.strip() != '\n':
-                        right_text.append(dutch_line)
+                        if dutch_line.strip() == 'o' or dutch_line.strip() == 'e' or dutch_line.strip() == "er" or dutch_line.strip() == "os" or dutch_line.strip() == "ste":
+                            continue
+                        else:
+                            right_text.append(dutch_line)
 
     except FileNotFoundError:
         print("The specified file was not found.")
@@ -92,10 +113,13 @@ def count_contents_title(text):
     """
     # Example: content.....1 or content.....2 in a single line
     pattern_summary = [r'\.{2}p\.\s\d', r'\.{2}.\d', r'\.{2}\sp\.\s\d', r'p\.\s\d']
+    pattern_not_to_match = [r',\s(p|pp)\.\s\d+', r'\(?p\.\s\d+\)?']
     text = text.split('\n')
     check_points = []
     for line in text:
-        if is_matching(line, pattern_summary):
+        if is_matching(line, pattern_not_to_match):
+            continue
+        elif is_matching(line, pattern_summary):
             check_points.append(line)
     return check_points
 
@@ -113,14 +137,21 @@ def get_summary_titles(text, check_points):
     text = text.split('\n')
 
     for line in text:
+        if line == "":
+            continue
         if counter == contents_counter:
             return all_contents
 
         content.append(line)
+        content = [line.strip() for line in content]
         if line in check_points:
+            for i in range(len(content)):
+                line = content[i]
+                if not(line.endswith('-')):
+                    content[i] += " "
             # join content and add to all_contents
-
-            cont = ' '.join(content)
+            #print(content)
+            cont = ''.join(content)
             # remove '\n' from each content
             all_contents.append(cont)
             content = []
@@ -134,7 +165,25 @@ def clean_text(text):
     :param text: processed text
     :return: cleaned text
     """
-    lines = text.split('\n')
+    replacements = {
+        '’': "'",
+        'Ŕ': '–',
+        '‟': "'",
+        '„': '‘'
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+        
+    patterns_and_replacements = [
+        (r'(no|n o|nos|Nos|N) (\d+)', r'n \2'), (r'(\d+)(er|e)', r'\1'), (r'(§?)(\d+)(,)', r'\1\2 \3'),
+        (r'(\w+)\s*[–-]\s*(\w+)', r'\1-\2'), (r'(\d+)(ste)', r'\1'), (r'([^;]+) ;', r'\1;'), (r'(ème)\s+(\d+)', r'\2\1')
+    ]
+    modified_text = text
+    for pattern, replacement_func in patterns_and_replacements:
+        modified_text = re.sub(pattern, replacement_func, modified_text)
+
+    lines = modified_text.split('\n')
     cleaned_lines = [line.strip() for line in lines if line.strip()]
     return '\n'.join(cleaned_lines)
 
@@ -216,10 +265,9 @@ def join_lines(string):
     lines = string.split('\n')
     joined_lines = []
     i = 0
-
     while i < len(lines):
         line = lines[i]
-        if line.endswith('-'):
+        if line.endswith('-') or line.endswith('–'):
             if i + 1 < len(lines):
                 line = line + lines[i + 1]
                 i += 1  # Skip the next line
@@ -229,14 +277,13 @@ def join_lines(string):
     return ' '.join(joined_lines)
 
 
+
 #TODO: Add explanations about the two last parameters (added by amar)
 def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, pub_date=None, language=None, legislature=None, num_legislature=None):
     """
     This function retrieves the chunks from a document and returns the passages objects containing all the
     information about the passage
     :param language: chunk language
-    :param full_text_cleaned:
-    :param contents_titles:
     :param pub_date: date
     :param contents_titles: list of contents titles in the current document
     :param full_text_cleaned: the full text of the document cleaned
@@ -293,6 +340,7 @@ def preprocess_text(text):
     summary_titles = get_summary_titles(text, check_points)
     text = join_lines(text)
     full_text_cleaned = remove_chunks(text, summary_titles)
+
     return full_text_cleaned, summary_titles
 
 
