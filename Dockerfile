@@ -13,5 +13,7 @@ RUN cd /senbot && pip install -r requirements.txt
 
 COPY . /senbot
 
+EXPOSE 5000
+
 # Specify the command to run on container start
 CMD ["python3", "/senbot/main.py"]
