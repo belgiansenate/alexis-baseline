@@ -14,7 +14,7 @@ def launch_first_install_process(limit=None):
 
 def launch_subsequent_install_process():
     print("Launching dev_gui.py...")
-    subprocess.run(['python', 'dev_gui.py'])
+    subprocess.run(['python', 'dev_gui.py'], env=os.environ.copy())
 
 
 def check_first_install(limit):
