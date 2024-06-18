@@ -1,3 +1,5 @@
 .idea
 .env
 chromadb_data_snt/
+config.ini
+.git/
