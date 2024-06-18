@@ -15,3 +15,5 @@ langchain
 langchain_community
 langchain_core
 FlagEmbedding
+pdf2text
+tenacity==8.3.0
