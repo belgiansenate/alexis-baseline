@@ -1,7 +1,7 @@
 import argparse
 import logging
+
 from global_variables import *
-from vector_database_manager import Mode
 
 
 def parse_args():
@@ -11,10 +11,9 @@ def parse_args():
     parser.add_argument('--mode', type=str, default=Mode.local)
     parser.add_argument('--host', type=str, default=host)
     parser.add_argument('--port', type=int, default=port_number)
-    parser.add_argument('--collection', type=str, default=collection_name)
-    parser.add_argument('--embedding', type=str, default=embedder)
+    parser.add_argument('--collection', type=str, nargs='+', default=[collection_name_bge, collection_name_all_mini])
+    parser.add_argument('--embedding', type=str, nargs='+', default=[embedder, embeddings_all_MiniLM_L6_V2])
     logging.captureWarnings(True)
     return parser.parse_args()
-
 
 
