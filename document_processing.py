@@ -366,7 +366,7 @@ def remove_empty_passages(passages_objects):
     :param passages_objects: list of passages objects
     :return: list of passages objects without empty passages
     """
-    return [passage_object for passage_object in passages_objects if passage_object.passage_text.strip() != '']
+    return [passage_object for passage_object in passages_objects if passage_object.page_content.strip() != '']
 
 
 def build_passages_objects(pdf_object: PdfObject):
