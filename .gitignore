@@ -1,1 +1,3 @@
 .idea
+.env
+chromadb_data_snt/
