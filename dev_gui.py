@@ -1,58 +1,41 @@
-import csv
-import re
 import time
 import os
 import gradio as gr
-from datetime import datetime
 
-from langchain import hub
 from langchain_community.chat_models import ChatOllama
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain, RetrievalQA
-from langchain_community.llms import LlamaCpp
-from langchain.schema.runnable import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-from gradio import Slider
-
 from arguments import parse_args
-from vector_database_manager import ChromaClient, Mode
-from global_variables import local_collection_path, cross_encoder, embeddings_all_MiniLM_L6_V2, reranker
+from global_variables import local_collection_path, reranker, Mode
+from utils import *
 
-from llama_cpp import Llama
 from langchain_community.vectorstores import Chroma
-from langchain.retrievers.document_compressors.cross_encoder_rerank import CrossEncoderReranker
-from langchain.retrievers import ContextualCompressionRetriever, MergerRetriever
+from langchain.retrievers import MergerRetriever
 
 args = parse_args()
 if args.mode == Mode.local:
-    snt_vector_db1 = Chroma(
-        persist_directory=local_collection_path,
-        embedding_function=args.embedding,
-        collection_name="coll_bge_3m_full"
-    )
-
-    snt_vector_new = Chroma(
-        persist_directory=local_collection_path,
-        embedding_function=embeddings_all_MiniLM_L6_V2,
-        collection_name="new_all_miniLM_L6_coll"
-    )
-
+    client = chromadb.PersistentClient(local_collection_path)
 else:
-    client = ChromaClient(host=args.host, mode=Mode.host, port_number=args.port)
-    client.get_or_create_collection(args.collection)
+    client = chromadb.HttpClient(args.host, args.port)
 
+snt_vector_store_1 = Chroma(
+    client=client,
+    embedding_function=args.embedding[0],
+    collection_name=args.collection[0]
+)
+
+snt_vector_store_2 = Chroma(
+    client=client,
+    embedding_function=args.embedding[1],
+    collection_name=args.collection[1]
+)
 
 # code from = https://www.reddit.com/r/LangChain/comments/1acywew/is_there_a_reranking_example_with_langchain/
 def rerank_docs(query, retrieved_docs, model):
     query_and_docs = [(query, r.metadata["passage_title"] + ": " + r.page_content) for r in retrieved_docs]
     scores = model.compute_score(query_and_docs)
     return sorted(list(zip(retrieved_docs, scores)), key=lambda x: x[1], reverse=True)
-
-
-def date_printing(date):
-    date_format = '%Y-%m-%d %H:%M:%S'
-    return ((datetime.strptime(date, date_format)).date()).strftime("%d/%m/%Y")
 
 
 def answer_concat(texts, n_rerank):
@@ -74,18 +57,13 @@ def answer_concat(texts, n_rerank):
 
 def retrieve_from_vector_db(message, n_results_bge, n_results_allMini, n_rerank, language):
     try:
-        """
-        results = querying_to_db(chroma_client=client, collection_name=args.collection, nl_query=message,
-                                 embedding_model=args.embedding, n_results=n_results)
-        """
-
-        retriever_all_mini = snt_vector_new.as_retriever(search_type="similarity", search_kwargs={
+        retriever_all_mini = snt_vector_store_2.as_retriever(search_type="mmr", search_kwargs={
             'filter': {'language': str(language)},
             "k": n_results_allMini,
             'fetch_k': 250,
             'lambda_mult': 0.1
         })
-        retriever_BGE_full_old = snt_vector_db1.as_retriever(search_type="mmr", search_kwargs={
+        retriever_BGE_full_old = snt_vector_store_1.as_retriever(search_type="mmr", search_kwargs={
             'filter': {'language': str(language)},
             "k": n_results_bge,
             'fetch_k': 250,
@@ -101,9 +79,8 @@ def retrieve_from_vector_db(message, n_results_bge, n_results_allMini, n_rerank,
         print(e)
         return "Sorry, I couldn't find any answer to your question", message
 
-    # error : File name too long
-    #return rel_text_BGE, answer_concat(rel_text_BGE, n_rerank)
-    return rel_text_BGE, answer_concat(rel_text_BGE, n_rerank)
+    
+    return relevant_docs, answer_concat(relevant_docs, n_rerank)
 
 
 def echo_chunks(message, chat_history, languages, n_result_bge, n_results_allmini, n_rerank):
@@ -119,37 +96,11 @@ def user(message, chat_history):
     return gr.Textbox(value="", interactive=False), chat_history
 
 
-def format_docs(docs):
-    results = []
-    hyperlink = "https://www.senate.be/www/webdriver?MItabObj=pdf&MIcolObj=pdf&MInamObj=pdfid&MItypeObj=application/pdf&MIvalObj="
-    for i, doc in enumerate(docs):
-        results.append(
-            f"<span style='color:red;'>Source {i + 1} ({doc.metadata['leg_title']}, du {date_printing(doc.metadata['date'])},"
-            f"""titre : {doc.metadata['passage_title']}, p.{doc.metadata['page']})\nLien: {hyperlink + str(doc.metadata['document_id'])}#page={str(doc.metadata['page'])}.</span> \n {doc.page_content}""")
-
-    return '\n\n'.join(results)
-
-
 # Todo: try to add prompts template for each of the models into the interface.
 def respond(chat_history, n_results_bge, n_results_allMini, n_rerank, model, language,
             ):
     _, context = retrieve_from_vector_db(chat_history[-1][0], n_results_bge, n_results_allMini, n_rerank, language)
     chat_history[-1][1] = ""
-
-    retriever_all_mini = snt_vector_new.as_retriever(search_type="mmr", search_kwargs={
-        'filter': {'language': str(language)},
-        "k": int(n_results_allMini),
-        'fetch_k': 250,
-        'lambda_mult': 0.1
-    })
-    retriever_BGE_full_old = snt_vector_db1.as_retriever(search_type="mmr", search_kwargs={
-        'filter': {'language': str(language)},
-        "k": int(n_results_bge),
-        'fetch_k': 250,
-        'lambda_mult': 0.9,
-    })
-
-    lotr = MergerRetriever(retrievers=[retriever_BGE_full_old, retriever_all_mini])
 
     ### LLM
     prompt = ""
@@ -207,17 +158,14 @@ def respond(chat_history, n_results_bge, n_results_allMini, n_rerank, model, lan
                 input_variables=["question", "context"],
             )
 
-    llm = ChatOllama(model=local_llm, temperature=0.7, max_output_tokens=500)
+    llm = ChatOllama(model=local_llm, temperature=0.7, max_output_tokens=1000)
 
     rag_chain = prompt | llm | StrOutputParser()
 
     # Run
     question = chat_history[-1][0]
-    docs = lotr.get_relevant_documents(question)
 
-    after_rerank = rerank_docs(question, docs, reranker)
-
-    bot_message = rag_chain.invoke({"context": answer_concat(after_rerank, n_rerank), "question": question})
+    bot_message = rag_chain.invoke({"context": context, "question": question})
 
     for character in bot_message:
         chat_history[-1][1] += character
@@ -248,13 +196,13 @@ with gr.Blocks() as demo:
         with gr.Row():
             with gr.Column(scale=3):
                 with gr.Accordion("Parameters"):
-                    n_results_BGE = gr.Slider(minimum=1, value=50, maximum=100, step=1,
+                    n_results_BGE = gr.Slider(minimum=1, value=50, step=1,
                                               label="Number of BGE passages",
                                               info="Number of passages to be returned by the 1st retriever")
-                    n_results_AllMINI = gr.Slider(minimum=1, value=50, maximum=100, step=1,
+                    n_results_AllMINI = gr.Slider(minimum=1, value=50, step=1,
                                                   label="Number of AllMINI passages",
                                                   info="Number of passages to be returned by the 2nd retriever")
-                    n_rerank = gr.Slider(minimum=1, value=1, maximum=50, step=1,
+                    n_rerank = gr.Slider(minimum=1, value=1, maximum=50 , step=1,
                                          label="Number of final results")
                     language = gr.Radio(
                         ["fr", "nl"],
@@ -287,10 +235,10 @@ with gr.Blocks() as demo:
                         ["Llama_3_8B", "Aya_23_35B"],
                         label="Available models")
                 with gr.Accordion("Parameters"):
-                    n_results_BGE = gr.Slider(minimum=1, value=50, maximum=100, step=1,
+                    n_results_BGE = gr.Slider(minimum=1, value=50, step=1,
                                               label="Number of BGE passages",
                                               info="Number of passages to be returned by the 1st retriever")
-                    n_results_AllMINI = gr.Slider(minimum=1, value=50, maximum=100, step=1,
+                    n_results_AllMINI = gr.Slider(minimum=1, value=50, step=1,
                                                   label="Number of AllMINI passages",
                                                   info="Number of passages to be returned by the 2nd retriever")
                     n_rerank_gen = gr.Slider(minimum=1, value=1, maximum=10, step=1,
@@ -327,4 +275,6 @@ with gr.Blocks() as demo:
 
 if __name__ == "__main__":
     demo.queue()
-    demo.launch(auth=("sntUser", "snt2024Passw"), server_name="172.16.0.120", server_port=5000)
+    usr = os.getenv('GRADIO_USERNAME')
+    pwd = os.getenv('GRADIO_PASSWORD')
+    demo.launch(auth=(usr, pwd), server_name="*")
