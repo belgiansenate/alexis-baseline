@@ -1,6 +1,6 @@
-[![Alexis Baseline 🤖](https://img.shields.io/badge/Introduction-blue)](#Alexis-Baseline🤖)
-[![Approach](https://img.shields.io/badge/Approach-blue)](#Approach)
-[![Embedding - rerank models](https://img.shields.io/badge/Embedding-&-Rerank-Models-blue)](#Embedding---rerank-models)
+[![Alexis Baseline 🤖](https://img.shields.io/badge/Introduction-blue)](#alexis-baseline)
+[![Approach](https://img.shields.io/badge/Approach-blue)](#approach)
+[![Embedding - rerank models](https://img.shields.io/badge/Embedding---Rerank-Models-blue)](#embedding---rerank-models)
 [![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-blue)](#large-language-models-llms)
 
 
