@@ -1,3 +1,7 @@
+"""
+    This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
+"""
+
 import logging
 import os
 import re
@@ -8,17 +12,12 @@ import requests
 
 from passage_object import PassageObject
 
-"""
-    This file contains utility functions that are used to chunk all annals files from 2000 to nowadays.
-"""
-
-
 def transform_pdf_2_txt(path, output_file):
     """
-    This function transforms a pdf file to a text file using pdftotext and poppler
-    :param path: path to the pdf file
-    :param output_file: path to the output (need to be a .txt file)
-    :return: None
+        This function transforms a pdf file to a text file using pdftotext and poppler
+        :param path: path to the pdf file
+        :param output_file: path to the output (need to be a .txt file)
+        :return: None
     """
     # Generate a text rendering of a PDF file in the form of a list of lines.
     args = ['pdftotext', '-layout', path, output_file]
@@ -31,9 +30,9 @@ def transform_pdf_2_txt(path, output_file):
 
 def split_document(text_files_path):
     """
-    This function splits a document into two parts: the left part and the right part
-    :param text_files_path: path to the text file .txt following the transformation of the pdf file
-    :return: left part and right part of the document
+        This function splits a document into two parts: the left part and the right part
+        :param text_files_path: path to the text file .txt following the transformation of the pdf file
+        :return: left part and right part of the document
     """
     left_text = []
     right_text = []
@@ -102,14 +101,20 @@ def split_document(text_files_path):
 
 
 def is_matching(string, patterns):
+    """
+        Checks if a particular string matches a list of patterns
+        :param string: the string to be processed
+        :param patterns: the patterns to match
+        :return: a Boolean
+    """
     return any(re.search(pattern, string) for pattern in patterns)
 
 
 def count_contents_title(text):
     """
-    This function counts the number of contents titles in a text
-    :param text: to be processed
-    :return: list of contents titles end check points
+        This function counts the number of contents titles in a text
+        :param text: to be processed
+        :return: list of contents titles end check points
     """
     # Example: content.....1 or content.....2 in a single line
     pattern_summary = [r'\.{2}p\.\s\d', r'\.{2}.\d', r'\.{2}\sp\.\s\d', r'p\.\s\d']
@@ -126,10 +131,10 @@ def count_contents_title(text):
 
 def get_summary_titles(text, check_points):
     """
-    This function returns the summary titles
-    :param text: processed text
-    :param check_points: list of contents titles end check points
-    :return: list of summary titles
+        This function returns the summary titles
+        :param text: processed text
+        :param check_points: list of contents titles end check points
+        :return: list of summary titles
     """
     counter = 0
     contents_counter = len(check_points)
@@ -161,9 +166,9 @@ def get_summary_titles(text, check_points):
 
 def clean_text(text):
     """
-    This function cleans the text by removing extra spaces and empty lines
-    :param text: processed text
-    :return: cleaned text
+        This function cleans the text by removing extra spaces and empty lines
+        :param text: processed text
+        :return: cleaned text
     """
     replacements = {
         '’': "'",
@@ -190,11 +195,11 @@ def clean_text(text):
 
 def remove_chunks(text, chunks, replace_with='\n'):
     """
-    This function removes chunks from a text
-    :param replace_with: replace the chunk with this string
-    :param text: processed text
-    :param chunks: chunks to be removed
-    :return: text without the chunk
+        This function removes chunks from a text
+        :param replace_with: replace the chunk with this string
+        :param text: processed text
+        :param chunks: chunks to be removed
+        :return: text without the chunk
     """
     for chunks in chunks:
         text = text.replace(chunks, replace_with)
@@ -203,9 +208,9 @@ def remove_chunks(text, chunks, replace_with='\n'):
 
 def build_custom_pattern(pattern):
     """
-    This function builds a custom pattern
-    :param pattern: match all special characters in a pattern
-    :return: return the pattern with special characters escaped by \
+        This function builds a custom pattern
+        :param pattern: match all special characters in a pattern
+        :return: return the pattern with special characters escaped by \
     """
     # if patter contains special characters by \ before them
     pattern = re.sub(r'([^\w\s])', r'\\\1', pattern)
@@ -214,11 +219,11 @@ def build_custom_pattern(pattern):
 
 def match_pattern_with_position(pattern, chunk, verbose=False):
     """
-    This function returns the match, start index and end index of a pattern in a chunk
-    :param pattern: a pattern to be matched
-    :param chunk: a chunk to be processed
-    :param verbose: if True print the pattern, the match and the length of the chunk
-    :return: match, start index and end index of a pattern in a chunk
+        This function returns the match, start index and end index of a pattern in a chunk
+        :param pattern: a pattern to be matched
+        :param chunk: a chunk to be processed
+        :param verbose: if True print the pattern, the match and the length of the chunk
+        :return: match, start index and end index of a pattern in a chunk
     """
     # remove starting and ending spaces
     result = re.search(pattern, chunk)
@@ -235,8 +240,8 @@ def match_pattern_with_position(pattern, chunk, verbose=False):
 
 def preprocess_content(content):
     """
-    This function preprocesses the content by removing the page number and the extra spaces
-    :return: content and page number
+        This function preprocesses the content by removing the page number and the extra spaces
+        :return: content and page number
     """
     extra_pattern = [r'\.{2,}p\.\s\d+', r'\.{2,}\sp\.\s\d+', r'p\.\s\d+']
     if is_matching(content, extra_pattern):
@@ -257,10 +262,10 @@ def preprocess_content(content):
 
 def join_lines(string):
     """
-    This function joins lines that end with - with '' and join other lines with a space, the reason is that in some
-    contents titles or words when the line is too long it is split into two lines
-    :param string: to be processed
-    :return: result of joining lines
+        This function joins lines that end with - with '' and join other lines with a space, the reason is that in some
+        contents titles or words when the line is too long it is split into two lines
+        :param string: to be processed
+        :return: result of joining lines
     """
     lines = string.split('\n')
     joined_lines = []
@@ -277,18 +282,18 @@ def join_lines(string):
     return ' '.join(joined_lines)
 
 
-
-#TODO: Add explanations about the two last parameters (added by amar)
 def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, pub_date=None, language=None, legislature=None, num_legislature=None):
     """
-    This function retrieves the chunks from a document and returns the passages objects containing all the
-    information about the passage
-    :param language: chunk language
-    :param pub_date: date
-    :param contents_titles: list of contents titles in the current document
-    :param full_text_cleaned: the full text of the document cleaned
-    :param document_id: document id
-    :return: passages objects and contents not found (if any error occurred especially for debugging)
+        This function retrieves the chunks from a document and returns the passages objects containing all the
+        information about the passage
+        :param num_legislature: the number of the document within that particular legislature
+        :param legislature: the legislature
+        :param language: chunk language
+        :param pub_date: date
+        :param contents_titles: list of contents titles in the current document
+        :param full_text_cleaned: the full text of the document cleaned
+        :param document_id: document id
+        :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
     passages = []
     contents_not_found = []
@@ -331,9 +336,9 @@ def get_chunks_from_text(full_text_cleaned, contents_titles, document_id=None, p
 
 def preprocess_text(text):
     """
-    This function preprocesses the text by removing the contents titles and the extra spaces to be ready for the retrieval
-    :param text: to be processed
-    :return: cleaned text and summary titles
+        This function preprocesses the text by removing the contents titles and the extra spaces to be ready for the retrieval
+        :param text: to be processed
+        :return: cleaned text and summary titles
     """
     text = clean_text(text)
     check_points = count_contents_title(text)
@@ -346,10 +351,10 @@ def preprocess_text(text):
 
 def download_pdf_from_website(link, path):
     """
-    This function downloads a file from a link
-    :param link: hyperlink to the file
-    :param path: path to the folder where the file will be saved
-    :return: None
+        This function downloads a file from a link
+        :param link: hyperlink to the file
+        :param path: path to the folder where the file will be saved
+        :return: None
     """
     try:
         # avoid ssl certificate error
@@ -362,18 +367,18 @@ def download_pdf_from_website(link, path):
 
 def remove_empty_passages(passages_objects):
     """
-    This function removes empty passages from a list of passages objects
-    :param passages_objects: list of passages objects
-    :return: list of passages objects without empty passages
+        This function removes empty passages from a list of passages objects
+        :param passages_objects: list of passages objects
+        :return: list of passages objects without empty passages
     """
     return [passage_object for passage_object in passages_objects if passage_object.page_content.strip() != '']
 
 
 def build_passages_objects(pdf_object: PdfObject):
     """
-    This function builds the passages objects from a document
-    :param pdf_object: pdf object containing the document information
-    :return: passages objects and contents not found (if any error occurred especially for debugging)
+        This function builds the passages objects from a document
+        :param pdf_object: pdf object containing the document information
+        :return: passages objects and contents not found (if any error occurred especially for debugging)
     """
     pdf_file = pdf_object.id + '.pdf'
 
@@ -418,11 +423,11 @@ def build_pdf_object_via_hyperlink(path_to_excel_file,
                                    hyperlink="https://www.senate.be/www/webdriver?MItabObj=pdf&MIcolObj=pdf"
                                              "&MInamObj=pdfid&MItypeObj=application/pdf&MIvalObj=", limit=None):
     """
-    This function returns the records from the database
-    :param limit: limit the number of records to be returned
-    :param hyperlink: hyperlink is the path to document  (hyperlink + document_id)
-    :param path_to_excel_file: path to the Excel file containing the records
-    :return: a list of pdf objects
+        This function returns the records from the database
+        :param limit: limit the number of records to be returned
+        :param hyperlink: hyperlink is the path to document  (hyperlink + document_id)
+        :param path_to_excel_file: path to the Excel file containing the records
+        :return: a list of pdf objects
     """
     df = pd.read_excel(path_to_excel_file)
     records = df.to_dict('records')
