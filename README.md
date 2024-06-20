@@ -24,7 +24,7 @@ The next Figure shows the design of this architecture:
 </div>
 <p>(<i> source </i>: Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large Language Models : A Survey. URL: https://arxiv.org/abs/2312.10997)</p>
 
-# Embedding - rerank models
+# Embedding - Rerank models
 
 This sections shows the models used to encode the passages (embedding models) and to do the post-retrieval process (rerank model). 
 <div align="center">
