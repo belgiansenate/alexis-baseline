@@ -36,7 +36,7 @@ This sections shows the models used to encode the passages (embedding models) an
 
   <p>Embedding models used in the project</p>
 </div>
-
+<br>
 <div align="center">
   
 | Rerank model | Base model | Multilingual? |
