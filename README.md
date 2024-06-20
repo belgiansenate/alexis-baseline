@@ -21,8 +21,8 @@ This sections shows the models used to encode the passages (embedding models) an
   
 | Embedding model | Embedding size | Context window | Multilingual? |
 | ----- | -------------- | -------------- | ------------ |
-| BAAI/bge-m3|1024 | 8192 | Yes |
-| all-MiniLM-L6-v2 | 384 | 256 | Some capabilities |
+| [BAAI/bge-m3](https://github.com/FlagOpen/FlagEmbedding)|1024 | 8192 | Yes |
+| [all-MiniLM-L6-v2](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html) | 384 | 256 | Some capabilities |
 
   <p>Embedding models used in the project</p>
 </div>
@@ -31,7 +31,7 @@ This sections shows the models used to encode the passages (embedding models) an
   
 | Rerank model | Base model | Multilingual? |
 | -------------------- | ---------- | ------------- |
-| BAAI/bge-reranker-v2-m3| BAAI/bge-m3 | Yes |
+| [BAAI/bge-reranker-v2-m3](https://github.com/FlagOpen/FlagEmbedding)| BAAI/bge-m3 | Yes |
 
   <p>Rerank model used in the project</p>
 </div>
@@ -45,7 +45,7 @@ The second model is a new model performing in 23 languages (French & Dutch inclu
   
 | Large Language Model | Number of parameters | Multilingual? | Precision |
 | -------------------- | -------------------- |-------------- | --------- |
-| Meta Llama 3 | 8B | Some capabilities | q4_K_M |
-| Cohere Aya 23 | 35B | Yes | q4_K_M |         
+| [Meta Llama 3](https://llama.meta.com/llama3/)  | 8B | Some capabilities | q4_K_M |
+| [Cohere Aya 23](https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23) | 35B | Yes | q4_K_M |         
   <p>LLMs used in the project</p>
 </div>
