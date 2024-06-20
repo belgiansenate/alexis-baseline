@@ -1,8 +1,8 @@
 <div align="center">
-  [![Alexis Baseline 🤖](https://img.shields.io/badge/Introduction-blue)](#alexis-baseline-)
+  <p></p>[![Alexis Baseline 🤖](https://img.shields.io/badge/Introduction-blue)](#alexis-baseline-)
   [![Approach](https://img.shields.io/badge/Approach-green)](#approach)
   [![Embedding - rerank models](https://img.shields.io/badge/Embedding-rerank-blue)](#embedding---rerank-models)
-  [![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)
+  [![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)</p>
 </div>
 
 # Alexis Baseline 🤖
