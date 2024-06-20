@@ -1,22 +1,24 @@
+"""
+    This file contains the essential methods related to the used database like storing passages in chromadb.
+"""
+
 import string
 
 from tqdm import tqdm
 from document_processing import build_passages_objects, build_pdf_object_via_hyperlink, remove_empty_passages
 from langchain_community.vectorstores import Chroma
 
-'''
-This file contains the functions used to store the passages_objects in the database
-'''
+
 def passages_storing(path_to_xl_file, chromadb_client, collection_name: string, records_limit=None,
                      embedding_function=None):
     """
-    This function processes the passages_objects from a folder and stores them in a collection in the database.
-    :param records_limit: number of records to be added to the database
-    :param embedding_function: embedding function to be used
-    :param chromadb_client: chromadb object
-    :param path_to_xl_file: path to the Excel file containing the metadata
-    :param collection_name: name of the collection (SVD_for_documents_retrieval)
-    :return: None
+      This function processes the passages_objects from a folder and stores them in a collection in the database.
+      :param records_limit: number of records to be added to the database
+      :param embedding_function: embedding function to be used (a list of embedding functions)
+      :param chromadb_client: chromadb object
+      :param path_to_xl_file: path to the Excel file containing the documents metadata (without titles)
+      :param collection_name: name of the used collection within chromadb (a list of strings)
+      :return: None
     """
     embedding_model_1 = embedding_function[0]
     embedding_model_2 = embedding_function[1]
