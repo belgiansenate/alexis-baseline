@@ -1,6 +1,4 @@
 [![Welcome](https://img.shields.io/badge/Welcome-blue)](#Alexis_Baseline_🤖)
-[![License](https://img.shields.io/badge/LICENSE-MIT-green)](#license)
-[![Projects](https://img.shields.io/badge/Projects-blue)](#projects)
 
 
 # Alexis Baseline 🤖
