@@ -65,6 +65,7 @@ In this project, the bilingual (French & Dutch) capability was a significant fac
 </div>
 
 # Some useful links
+- https://www.langchain.com/
 - https://llama.meta.com/llama3/
 - https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23
 - https://github.com/FlagOpen/FlagEmbedding
