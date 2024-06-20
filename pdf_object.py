@@ -1,4 +1,8 @@
-# TODO add author
+"""
+    This file contains the PdfObject class which creates pdf objects based on the documents we work on.
+    In this way, we have all the needed documents' metadata.
+"""
+
 class PdfObject:
     def __init__(self, pdf_id, act, date, legislature, num, start_page, end_page, link):
         self.id = str(pdf_id)
