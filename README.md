@@ -10,7 +10,7 @@ The Belgian Senate is an important institution that generates a large quantity o
 
 # Approach
 
-We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on returning most likely relevant passages from the datastore to a question asked by the user (as an input) and finally a generator which takes a question and the relevant passages as input and generates an answer based on the given passages in the output. 
+We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on returning most likely relevant passages from the datastore to a question asked by the user (as an input) and finally a generator which takes a question and the relevant passages as input and generates an answer based on the given passages. 
 A post-retrieval phase is necessary to get better passages in the first ranks. In this project, we decided to use the rerank method using a rerank model in order to create pairs (question - passage). These pairs are analysed separately in order to computer a relevancy score for each of them. Once the new scores are computed, the passages are reranked (best ones at first). 
 The next figure shows how this can be designed.
 <div align="center">
