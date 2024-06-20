@@ -14,7 +14,8 @@ The next figure shows how this can be designed.
 </div>
 Since the passages we have are sometimes small (like votes), we decided to merge two retrievers. The first one performs well in both French and Dutch and better understands the meaning of the words and sentences in the passages. The second model performs well in small texts like votes (which was not possible using the first retriever). This approach is called Lord Of The Retrievers (LOTR) (https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/).
 The next tables shows the embedding models used for this purpose.
-| Model | Embedding size | Context window | Multilingual | 
-|  ---  |  ---  |  ---  |  ---  | 
+
+| Model | Embedding size | Context window | Multilingual |
+| ----- | -------------- | -------------- | ------------ |
 | BAAI/bge-m3|1024 | 8192 | Yes |
 | all-MiniLM-L6-v2 | 384 | 256 | Some capabilities |
