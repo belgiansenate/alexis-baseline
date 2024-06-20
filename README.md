@@ -31,8 +31,8 @@ This sections shows the models used to encode the passages (embedding models) an
   
 | Embedding model | Embedding size | Context window | Multilingual? |
 | ----- | -------------- | -------------- | ------------ |
-| [BAAI/bge-m3](https://github.com/FlagOpen/FlagEmbedding)|1024 | 8192 | Yes |
-| [all-MiniLM-L6-v2](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html) | 384 | 256 | Some capabilities |
+| [BAAI/bge-m3](https://github.com/FlagOpen/FlagEmbedding)|1024 | 8192 tokens | Yes |
+| [all-MiniLM-L6-v2](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html) | 384 | 256 tokens | Some capabilities |
 
   <p>Embedding models used in the project</p>
 </div>
