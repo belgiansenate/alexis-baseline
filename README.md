@@ -58,3 +58,11 @@ In this project, the bilingual (French & Dutch) capability was a significant fac
 | [Cohere Aya 23](https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23) | 35B | Yes | q4_K_M |         
   <p>LLMs used in the project</p>
 </div>
+
+# Some useful links
+- https://llama.meta.com/llama3/
+- https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23
+- https://github.com/FlagOpen/FlagEmbedding
+- https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
+- https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/
+- https://www.trychroma.com/
