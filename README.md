@@ -24,5 +24,14 @@ This sections shows the models used to encode the passages (embedding models) an
 | BAAI/bge-m3|1024 | 8192 | Yes |
 | all-MiniLM-L6-v2 | 384 | 256 | Some capabilities |
 
-  <p>Embedding models</p>
+  <p>Embedding models used in the project</p>
+</div>
+
+<div align="center">
+  
+| Embedding model name | Base model | Multilingual? |
+| -------------------- | ---------- | ------------- |
+| BAAI/bge-reranker-v2-m3| BAAI/bge-m3 | Yes |
+
+  <p>Rerank model used in the project</p>
 </div>
