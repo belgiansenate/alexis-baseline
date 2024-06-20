@@ -1,5 +1,8 @@
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings, HuggingFaceEmbeddings
+"""
+    This file contains two classes which define two custom embedding functions
+"""
 
+from langchain_community.embeddings import HuggingFaceBgeEmbeddings, HuggingFaceEmbeddings
 
 class CustomHuggingFaceEmbeddings(HuggingFaceEmbeddings):
     def __call__(self, input: str) -> list[float]:
