@@ -12,3 +12,4 @@ The next figure shows how this can be designed.
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
   <p>(source: Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large Language Models :        A Survey. URL: https://arxiv.org/abs/2312.10997)</p>
 </div>
+Since the passages we have are sometimes small (like votes), we decided to merge two retrievers. The first one performs well in both French and Dutch and better understands the meaning of the words and sentences in the passages. The second model performs well in small texts like votes (which was not possible using the first retriever). This approach is called Lord Of The Retrievers (LOTR) (https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/).
