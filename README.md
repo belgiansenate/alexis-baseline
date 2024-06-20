@@ -11,7 +11,8 @@ The Belgian Senate is an important institution that generates a large quantity o
 
 # Approach
 
-Our chatbot utilizes a *Retrieval Augmented Generation (RAG)* architecture, designed to enhance question answering systems by integrating a datastore, retriever, and generator components. The architecture aims to provide accurate and contextually relevant answers to user queries. Here’s an overview of each component and its role in the system:
+Our chatbot utilizes a *Retrieval Augmented Generation (RAG)* architecture, designed to enhance question answering systems by integrating a datastore, retriever, and generator components. The architecture aims to provide accurate and contextually relevant answers to user queries.<br>
+Here’s an overview of each component and its role in the system:
 1. **Datastore**: Which is central to our approach. It stores relevant passages as embeddings. These passages serve as the knowledge base from which the system retrieves information to answer user questions. We use [chromadb](https://www.trychroma.com/) for this purpose.
 2. **Retriever**: The retriever component is responsible for retrieving the most relevant passages from the datastore based on the user's input question. This initial retrieval phase is crucial as it sets the context for generating accurate answers. We adopt the *[Lord Of The Retrievers (LOTR)](https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/)* which is designed in order to merge several retrievers and exploit their different strengths.
    - **First retriever**: This retriever excels in both French and Dutch languages and demonstrates strong semantic understanding of words and sentences within passages. It efficiently retrieves relevant information across a wide range of contexts.
@@ -19,6 +20,7 @@ Our chatbot utilizes a *Retrieval Augmented Generation (RAG)* architecture, desi
 4. **Generator**: Once relevant passages are retrieved, the generator component processes the user question along with these passages to generate a coherent and informative answer. This generation process ensures that the response is not only relevant but also comprehensively addresses the query. This process is done using *Large Language Models (LLMs)*.
 5. **Post-Retrieval Phase**: To improve the quality of retrieved passages, a post-retrieval phase employs a rerank method. This method involves using a rerank model to evaluate and score question-passage pairs independently. The reranking process aims to prioritize passages with higher relevancy scores, thereby enhancing the effectiveness of subsequent answer generation.<br>
 <br>
+We used [langchain](https://www.langchain.com/) as a framekwork which gives more control and facilities in *RAG* applications.<br>
 The next Figure shows the design of this architecture:
 <div align="center">
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
