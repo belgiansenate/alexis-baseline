@@ -5,8 +5,11 @@ The Belgian Senate is an important institution that generates a large quantity o
 
 # Approach
 
-We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on given a question as an input, it retrieves the most likely relevant passages from the datastore and finally we have a generator which takes a question and relevant passages as input and generate an answer in the output. The next figure shows how this can be designed.
+We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on returning most likely relevant passages from the datastore to a question asked by the user (as an input) and finally a generator which takes a question and the relevant passages as input and generates an answer based on the given passages in the output. 
+A post-retrieval phase is necessary to get better passages in the first ranks. In this project, we decided to use the rerank method using a rerank model in order to create pairs (question - passage). These pairs are analysed separately in order to computer a relevancy score for each of them. Once the new scores are computed, the passages are reranked (best ones at first). 
+The next figure shows how this can be designed.
+![ARAG](https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb)
 
-![1695787886133](https://github.com/belgiansenate/alexis-baseline/assets/56476929/862d87fa-e806-41cd-bca0-3b8e6012b8a5)
-
-(source: [https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/](https://www.linkedin.com/pulse/what-retrieval-augmented-generation-grow-right/) )
+(source: [Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai,
+Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large
+Language Models : A Survey.](https://arxiv.org/abs/2312.10997) )
