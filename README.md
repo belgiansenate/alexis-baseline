@@ -19,7 +19,7 @@ Since the passages we have are sometimes small (like votes), we decided to merge
 This sections shows the models used to encode the passages (embedding models) and to do the post-retrieval process (rerank model). 
 <div align="center">
   
-| Embedding model name | Embedding size | Context window | Multilingual? |
+| Embedding model | Embedding size | Context window | Multilingual? |
 | ----- | -------------- | -------------- | ------------ |
 | BAAI/bge-m3|1024 | 8192 | Yes |
 | all-MiniLM-L6-v2 | 384 | 256 | Some capabilities |
@@ -29,9 +29,23 @@ This sections shows the models used to encode the passages (embedding models) an
 
 <div align="center">
   
-| Embedding model name | Base model | Multilingual? |
+| Rerank model | Base model | Multilingual? |
 | -------------------- | ---------- | ------------- |
 | BAAI/bge-reranker-v2-m3| BAAI/bge-m3 | Yes |
 
   <p>Rerank model used in the project</p>
+</div>
+
+# Large Language Models (LLMs)
+
+In this project, the bilingual (French & Dutch) aspect was important. Only a small number of models were trained and perform well in Dutch. Several models perform well in both French and English. Two models were selected, the first one generate a really good answers in French but not in dutch as it is used in low precision and is not trained on a large content in Dutch.
+The second model is a new model performing in 23 languages (French & Dutch included). It is built on a new research which states that instead of building and training LLMs on several languages (like 100), build models on a small number of languages but witch large content and datasets in every language. 
+
+<div align="center">
+  
+| Large Language Model | Number of parameters | Multilingual? | Precision |
+| -------------------- | -------------------- |-------------- | --------- |
+| Meta Llama 3 | 8B | Some capabilities | q4_K_M |
+| Cohere Aya 23 | 35B | Yes | q4_K_M |         
+  <p>LLMs used in the project</p>
 </div>
