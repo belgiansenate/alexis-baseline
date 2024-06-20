@@ -1,7 +1,8 @@
 [![Alexis Baseline 🤖](https://img.shields.io/badge/Introduction-blue)](#alexis-baseline-)
 [![Approach](https://img.shields.io/badge/Approach-green)](#approach)
 [![Embedding - rerank models](https://img.shields.io/badge/Embedding-rerank-blue)](#embedding---rerank-models)
-[![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)</p>
+[![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)
+[![Some useful links](https://img.shields.io/badge/links-red)](#some-useful-links)
 
 # Alexis Baseline 🤖
 
@@ -66,3 +67,4 @@ In this project, the bilingual (French & Dutch) capability was a significant fac
 - https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 - https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/
 - https://www.trychroma.com/
+- https://arxiv.org/abs/2312.10997
