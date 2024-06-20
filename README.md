@@ -1,6 +1,6 @@
-[![Alexis Baseline 🤖](https://img.shields.io/badge/Welcome-blue)](#Introductio)
+[![Alexis Baseline 🤖](https://img.shields.io/badge/Welcome-blue)](#Introduction)
 [![Approach](https://img.shields.io/badge/Welcome-blue)](#Approach)
-[![Embedding - rerank models](https://img.shields.io/badge/Welcome-blue)](#Embedding - rerank_models)
+[![Embedding - rerank models](https://img.shields.io/badge/Welcome-blue)](#Models1)
 [![Large Language Models (LLMs)](https://img.shields.io/badge/Welcome-blue)](#LLMs)
 
 
