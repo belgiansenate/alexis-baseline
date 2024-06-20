@@ -48,8 +48,7 @@ This sections shows the models used to encode the passages (embedding models) an
 
 # Large Language Models (LLMs)
 
-In this project, the bilingual (French & Dutch) aspect was important. Only a small number of models were trained and perform well in Dutch. Several models perform well in both French and English. Two models were selected, the first one generates really good answers in French but not in Dutch as it is used in low precision and is not trained on a large content in Dutch.<br>
-The second model is a new model performing in 23 languages (French & Dutch included). It is built on a new research which states that instead of building and training LLMs on several languages (like 100), build models on a small number of languages but witch large content and datasets in every language. 
+In this project, the bilingual (French & Dutch) capability was a significant factor. Among the models evaluated, only a few demonstrated strong performance in Dutch. Several models showed strong performance in both French and English. Ultimately, two models were chosen: the first excels in generating high-quality responses in French but falls short in Dutch due to limited training data and lower precision. The second model is a novel multi-language model, capable of performing in 23 languages including French and Dutch. It is based on a new research approach advocating for the development of language models focused on a smaller number of languages, but with extensive and diverse datasets for each language, rather than attempting to cover a vast number of languages with less comprehensive data. 
 
 <div align="center">
   
