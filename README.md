@@ -19,7 +19,7 @@ Since the passages we have are sometimes small (like votes), we decided to merge
 This sections shows the models used to encode the passages (embedding models) and to do the post-retrieval process (rerank model). 
 <div align="center">
   
-| Model | Embedding size | Context window | Multilingual |
+| Embedding model name | Embedding size | Context window | Multilingual |
 | ----- | -------------- | -------------- | ------------ |
 | BAAI/bge-m3|1024 | 8192 | Yes |
 | all-MiniLM-L6-v2 | 384 | 256 | Some capabilities |
