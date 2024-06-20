@@ -10,5 +10,5 @@ A post-retrieval phase is necessary to get better passages in the first ranks. I
 The next figure shows how this can be designed.
 <div align="center">
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
-  <p>(source: [Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large Language Models :        A Survey.](https://arxiv.org/abs/2312.10997))</p>
+  <p>(source: Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large Language Models :        A Survey. URL: https://arxiv.org/abs/2312.10997)</p>
 </div>
