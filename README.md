@@ -20,8 +20,9 @@ Here’s an overview of each component and its role in the system:
 4. **Generator**: Once relevant passages are retrieved, the generator component processes the user question along with these passages to generate a coherent and informative answer. This generation process ensures that the response is not only relevant but also comprehensively addresses the query. This process is done using *Large Language Models (LLMs)*.
 5. **Post-Retrieval Phase**: To improve the quality of retrieved passages, a post-retrieval phase employs a rerank method. This method involves using a rerank model to evaluate and score question-passage pairs independently. The reranking process aims to prioritize passages with higher relevancy scores, thereby enhancing the effectiveness of subsequent answer generation.<br>
 <br>
-We used [langchain](https://www.langchain.com/) as a framekwork which gives more control and facilities in *RAG* applications.<br>
+We used [langchain](https://www.langchain.com/) as a framekwork which gives more control and facilities in *RAG* applications.
 The next Figure shows the design of this architecture:
+
 <div align="center">
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
 </div>
