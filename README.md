@@ -10,14 +10,18 @@ The Belgian Senate is an important institution that generates a large quantity o
 
 # Approach
 
-We decided to use an approach based on a Retrieval Augmented Generation (RAG) architecture which consists on having a datastore to store our relavant passages as embeddings, a retriever which consists on returning most likely relevant passages from the datastore to a question asked by the user (as an input) and finally a generator which takes a question and the relevant passages as input and generates an answer based on the given passages. 
-A post-retrieval phase is necessary to get better passages in the first ranks. In this project, we decided to use the rerank method using a rerank model in order to create pairs (question - passage). These pairs are analysed separately in order to computer a relevancy score for each of them. Once the new scores are computed, the passages are reranked (best ones at first). 
-The next figure shows how this can be designed.
+Our project utilizes a Retrieval Augmented Generation (RAG) architecture, designed to enhance question answering systems by integrating a datastore, retriever, and generator components. The architecture aims to provide accurate and contextually relevant answers to user queries. Here’s an overview of each component and its role in the system:
+1. Datastore: Central to our approach is a datastore that stores relevant passages as embeddings. These passages serve as the knowledge base from which the system retrieves information to answer user questions.
+2. Retriever: The retriever component is responsible for retrieving the most relevant passages from the datastore based on the user's input question. This initial retrieval phase is crucial as it sets the context for generating accurate answers. Ve adopt the [Lord Of The Retrievers (LOTR)](https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/) which is designed in order to merge several retrievers and exploit their different strength.
+   - First retriever: This retriever excels in both French and Dutch languages and demonstrates strong semantic understanding of words and sentences within passages. It efficiently retrieves relevant information across a wide range of contexts.
+   - Second Retriever: Handles small texts such as votes, this retriever complements the first one by focusing on precision and accuracy in retrieving concise information.  
+4. Generator: Once relevant passages are retrieved, the generator component processes the user question along with these passages to generate a coherent and informative answer. This generation process ensures that the response is not only relevant but also comprehensively addresses the query. This process is done using Large Language Models (LLMs).
+5. Post-Retrieval Phase: To improve the quality of retrieved passages, a post-retrieval phase employs a rerank method. This method involves using a rerank model to evaluate and score question-passage pairs independently. The reranking process aims to prioritize passages with higher relevancy scores, thereby enhancing the effectiveness of subsequent answer generation.
+The next Figure shows the design of this arechitecture:
 <div align="center">
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
 </div>
 <p>(source: Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, Haofen Wang. Retrieval-Augmented Generation for Large Language Models : A Survey. URL: https://arxiv.org/abs/2312.10997)</p>
-Since the passages we have are sometimes small (like votes), we decided to merge two retrievers. The first one performs well in both French and Dutch and better understands the meaning of the words and sentences in the passages. The second model performs well in small texts like votes (which was not possible using the first retriever). This approach is called Lord Of The Retrievers (LOTR) (https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/). After that, a rerank process is done using a multilingual rerank model. Finaly, the generation is done using a Large Language Model (LLM).
 
 # Embedding - rerank models
 
