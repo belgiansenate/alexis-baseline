@@ -2,7 +2,7 @@
 [![Approach](https://img.shields.io/badge/Approach-green)](#approach)
 [![Embedding - rerank models](https://img.shields.io/badge/Embedding-rerank-blue)](#embedding---rerank-models)
 [![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)
-[![Some useful links](https://img.shields.io/badge/links-red)](#some-useful-links)
+[![Some useful links](https://img.shields.io/badge/links-yellow)](#some-useful-links)
 
 # Alexis Baseline 🤖
 
