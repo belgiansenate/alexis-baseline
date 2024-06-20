@@ -21,7 +21,7 @@ Here’s an overview of each component and its role in the system:<br>
 5. **Post-Retrieval Phase**: To improve the quality of retrieved passages, a post-retrieval phase employs a rerank method. This method involves using a rerank model to evaluate and score question-passage pairs independently. The reranking process aims to prioritize passages with higher relevancy scores, thereby enhancing the effectiveness of subsequent answer generation.<br>
 <br>
 The next Figure shows the design of this architecture:
-<br>
+
 <div align="center">
   <img src="https://github.com/belgiansenate/alexis-baseline/assets/56476929/fa8958df-7f22-4084-812e-f27aa9e0fcfb" alt="ARAG" width="175"/>
 </div>
