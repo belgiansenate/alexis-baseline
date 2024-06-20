@@ -1,3 +1,7 @@
+"""
+    This file initializes a chromadb object and triggers the passages storing process
+"""
+
 from arguments import parse_args
 from database_operations import passages_storing
 from global_variables import local_collection_path, Mode
