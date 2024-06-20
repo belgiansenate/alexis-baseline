@@ -1,3 +1,7 @@
+"""
+    This file contains the starting point of the application (main)
+"""
+
 import argparse
 import configparser
 import os
