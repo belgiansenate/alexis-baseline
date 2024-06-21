@@ -1,4 +1,5 @@
 [![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
+[![Website](https://img.shields.io/badge/Ollama-blue)](https://ollama.com/)
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
 [![Website](https://img.shields.io/badge/Llama_3-green)](https://llama.meta.com/llama3/)
 [![Website](https://img.shields.io/badge/FlagEmbeddings_&_Rerank-red)](https://github.com/FlagOpen/FlagEmbedding)
@@ -31,7 +32,7 @@ The next Figure shows the design of this architecture:
 
 # Embedding - Rerank models
 
-This sections shows the models used to encode the passages (embedding models) and to do the post-retrieval process (rerank model). 
+This section shows the models used to encode the passages (embedding models) and to do the post-retrieval process (rerank model). 
 <div align="center">
   
 | Embedding model | Embedding size | Context window | Multilingual? |
@@ -59,8 +60,8 @@ In this project, the bilingual (French & Dutch) capability was a significant fac
   
 | Large Language Model | Number of parameters | Multilingual? | Precision |
 | -------------------- | -------------------- |-------------- | --------- |
-| [Meta Llama 3](https://llama.meta.com/llama3/)  | 8B | Some capabilities | q4_K_M |
-| [Cohere Aya 23](https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23) | 35B | Yes | q4_K_M |         
+| [Meta Llama 3](https://llama.meta.com/llama3/)  | 8B | Some capabilities | [q4_K_M](https://ollama.com/library/llama3:8b-instruct-q4_K_M) |
+| [Cohere Aya 23](https://cohere.com/research/papers/aya-command-23-8b-and-35b-technical-report-2024-05-23) | 35B | Yes | [q4_K_M](https://ollama.com/library/aya:35b-23-q4_K_M) |         
   <p>LLMs used in the project</p>
 </div>
 
