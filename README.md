@@ -1,6 +1,5 @@
 [![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
 [![Website](https://img.shields.io/badge/Ollama-blue)](https://ollama.com/)
-[![Website](https://img.shields.io/badge/MTEB_Leaderboard-Hugging_Face-blue)](https://huggingface.co/spaces/mteb/leaderboard)
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
 [![Website](https://img.shields.io/badge/Llama_3-green)](https://llama.meta.com/llama3/)
 [![Website](https://img.shields.io/badge/FlagEmbeddings_&_Rerank-red)](https://github.com/FlagOpen/FlagEmbedding)
