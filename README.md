@@ -1,4 +1,4 @@
-[(https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
+[![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
 [![Approach](https://img.shields.io/badge/Approach-green)](#approach)
 [![Embedding - rerank models](https://img.shields.io/badge/Embedding-rerank-blue)](#embedding---rerank-models)
 [![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)
