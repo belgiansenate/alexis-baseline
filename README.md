@@ -1,8 +1,8 @@
 [![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
 [![Website](https://img.shields.io/badge/Llama_3-blue)](https://llama.meta.com/llama3/)
-[![Large Language Models (LLMs)](https://img.shields.io/badge/LLMs-red)](#large-language-models-llms)
-[![Some useful links](https://img.shields.io/badge/links-yellow)](#some-useful-links)
+[![Website](https://img.shields.io/badge/FlagEmbeddings_&_Rerank-red)](https://github.com/FlagOpen/FlagEmbedding)
+[![Website](https://img.shields.io/badge/links-yellow)](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
 
 # Alexis Baseline 🤖
 
