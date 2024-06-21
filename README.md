@@ -8,10 +8,10 @@
 ## Table of Contents
 
 - [Alexis Baseline 🤖](#alexis-baseline-)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- [Approach](#approach)
+- [Embedding - Rerank models](#embedding---rerank-models)
+- [Large Language Models (LLMs)](#large-language-models-llms)
+- [Some useful links](#some-useful-links)
 
 # Alexis Baseline 🤖
 
