@@ -23,7 +23,7 @@ The Belgian Senate is an important institution that generates a large quantity o
 # Approach
 
 Our chatbot utilizes a *Retrieval Augmented Generation (RAG)* architecture, designed to enhance question answering systems by integrating a datastore, retriever, and generator components. The architecture aims to provide accurate and contextually relevant answers to user queries.<br>
-We use [langchain](https://www.langchain.com/) as a framework offering more control and facilities when implementing **RAG** applications.<br>
+We use [langchain](https://www.langchain.com/) as a framework which offers more control and facilities when implementing **RAG** applications.<br>
 <br>
 Here’s an overview of each component and its role in the system:<br>
 1. **Datastore**: Which is central to our approach. It stores relevant passages as embeddings. These passages serve as the knowledge base from which the system retrieves information to answer user questions. We use [chromadb](https://www.trychroma.com/) for this purpose.<br>
