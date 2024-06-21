@@ -1,3 +1,4 @@
+[![Website](https://img.shields.io/badge/Python-yellow)](https://www.python.org/)
 [![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
 [![Website](https://img.shields.io/badge/Ollama-blue)](https://ollama.com/)
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
