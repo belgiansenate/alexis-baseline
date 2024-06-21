@@ -3,7 +3,7 @@
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
 [![Website](https://img.shields.io/badge/Llama_3-green)](https://llama.meta.com/llama3/)
 [![Website](https://img.shields.io/badge/FlagEmbeddings_&_Rerank-red)](https://github.com/FlagOpen/FlagEmbedding)
-[![Website](https://img.shields.io/badge/Sentence_Bert-yellow)](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
+[![Website](https://img.shields.io/badge/Sentence_Bert-red)](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
 
 
 ## Table of Contents
