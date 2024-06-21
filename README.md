@@ -1,9 +1,11 @@
 [![Website](https://img.shields.io/badge/Langchain-blue)](https://www.langchain.com/)
 [![Website](https://img.shields.io/badge/Ollama-blue)](https://ollama.com/)
+[![Website](https://img.shields.io/badge/MTEB_Leaderboard-Hugging_Face-blue)](https://huggingface.co/spaces/mteb/leaderboard)
 [![Website](https://img.shields.io/badge/Aya_23-green)](https://cohere.com/blog/aya23)
 [![Website](https://img.shields.io/badge/Llama_3-green)](https://llama.meta.com/llama3/)
 [![Website](https://img.shields.io/badge/FlagEmbeddings_&_Rerank-red)](https://github.com/FlagOpen/FlagEmbedding)
 [![Website](https://img.shields.io/badge/Sentence_Bert-yellow)](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
+
 
 ## Table of Contents
 
@@ -82,3 +84,4 @@ In this project, the bilingual (French & Dutch) capability was a significant fac
 - https://python.langchain.com/v0.1/docs/integrations/retrievers/merger_retriever/
 - https://www.trychroma.com/
 - https://arxiv.org/abs/2312.10997
+- https://huggingface.co/spaces/mteb/leaderboard
